@@ -1,4 +1,8 @@
 import streamlit as st
+import requests
+
+# Api constants
+URL = "http://localhost:8000/predict"
 
 # Setup page
 st.set_page_config(
@@ -21,4 +25,16 @@ with st.form(key='comment_form'):
         if comment == "":
             st.error("Please enter a comment for analysis")
         else:
-            st.success(f"Comment: {comment}")
+            # Make an API request
+            params = {"message": comment}
+            response = requests.get(URL, params=params)
+            # Check the response is valid
+            if response.status_code != 200:
+                st.error("There was an error with the API request.")
+            else:
+                # Display the results
+                results = response.json()
+                st.markdown(f"""### Comment
+                            {results['comment']}""")
+                st.markdown(f"""### Sentiment Score
+                            {results['sentiment']}""")
