@@ -2,6 +2,10 @@ pandas==2.1.0
 matplotlib==3.7.2
 numpy==1.25.2
 seaborn==0.12.2
+cmake==3.27.4.1
+pkgconfig==1.5.*
+transformers==4.33.*
+torch==2.0.0
 fastapi==0.103.1
 uvicorn==0.23.2
 streamlit==1.26.0
