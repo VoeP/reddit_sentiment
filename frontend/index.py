@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # Api constants
-URL = "http://localhost:8000/predict"
+URL = "http://localhost:8080/predict"
 
 # Setup page
 st.set_page_config(
