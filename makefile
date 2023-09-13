@@ -22,3 +22,9 @@ stop_container:
 start_container:
 	CONTAINER_ID=$$(cat $(CACHE_FILE)); \
      	docker start $$CONTAINER_ID
+
+update_container:
+	CONTAINER_ID=$$(cat $(CACHE_FILE)); \
+	docker stop $$CONTAINER_ID
+	docker rm $$CONTAINER_ID
+	$(MAKE) build_container_local
