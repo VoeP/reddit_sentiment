@@ -1,3 +1,5 @@
+CACHE_FILE := .container_id_cache
+
 run_api:
 	uvicorn API.fastapi:app --reload
 
@@ -14,4 +16,9 @@ build_container_local:
 
 stop_container:
 	CONTAINER_ID=$$(docker ps -q --filter "ancestor=api"); \
+	echo "$$CONTAINER_ID" > $(CACHE_FILE); \
 	docker stop $$CONTAINER_ID
+
+start_container:
+	CONTAINER_ID=$$(cat $(CACHE_FILE)); \
+     	docker start $$CONTAINER_ID
