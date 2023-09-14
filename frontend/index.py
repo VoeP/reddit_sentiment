@@ -22,7 +22,7 @@ st.markdown("## Enter your comment below for analysis:")
 
 # Main form
 with st.form(key='comment_form'):
-    comment = st.text_input("Comment")
+    comment = st.text_area("Comment")
     submit_button = st.form_submit_button("Predict Sentiment")
 
     # Handle form submission
