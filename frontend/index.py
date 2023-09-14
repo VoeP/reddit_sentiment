@@ -57,14 +57,10 @@ with st.form(key='comment_form'):
 
                 # Incredibly jank way of displaying the comment without any markdown or latex
                 comment_with_line_breaks = html.escape(results['comment']).replace('\n', '<br>')
-                # Set height based on number of lines and set scroll if necessary
-                # (This is pretty goddamn jank)
-                scroll = False
-                height = (len(comment_with_line_breaks.split("<br>")) + 1) * 20
-                max_height = 150
-                if height > max_height:
-                    height = max_height
-                    scroll = True
+                # Set height and stuff (mega jank)
+                # I would like this to be more dynamic but it's a pain because of line breaks and text wrapping
+                scroll = True
+                height = 150
 
                 # Write the html itself with styling for font
                 components.html(f"<p style=\"font-family: Sans-Serif\">{comment_with_line_breaks}</p>", height=height, scrolling=scroll)
