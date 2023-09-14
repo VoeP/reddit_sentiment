@@ -5,11 +5,16 @@ import requests, html
 # Api constants
 deployment = st.secrets.deployment.deployment
 if deployment == "LOCAL":
-    URL = "http://localhost:8000/predict"
+    URL = "http://localhost:8000/"
 elif deployment == "DOCKER_LOCAL":
-    URL = "http://localhost:8080/predict"
+    URL = "http://localhost:8080/"
 elif deployment == "DOCKER_GCP":
     URL = ""    # TODO: Add GCP URL here
+
+# Get the endpoint from secrets
+endpoint = st.secrets.deployment.endpoint
+# Add it to the url
+URL += endpoint
 
 # Setup page
 st.set_page_config(

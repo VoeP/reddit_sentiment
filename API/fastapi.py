@@ -3,6 +3,14 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer, Text
 
 app = FastAPI()
 
+CHUNK_SIZE = 512
+
+# Generic error function to use for all endpoints
+def message_error(message):
+    if message is None:
+        return {"error": "No comment provided"}
+    return None
+
 # Set up some models so we can pick what we want to use
 def load_toxic_comment_model():
     # Load the 'toxic comment' model from Hugging Face
@@ -20,7 +28,8 @@ def load_BERT_model():
 
     return TextClassificationPipeline(model=model, tokenizer=tokenizer)
 
-pipeline = load_BERT_model()
+pipeline_bert = load_BERT_model()
+pipeline_toxic = load_toxic_comment_model()
 
 # Create the root endpoint
 @app.get("/")
@@ -29,19 +38,19 @@ def index():
 
 # Create the predict endpoint
 # Example usage in browser: http://localhost:8000/predict?message=Hello
-@app.get("/predict")
-def predict(message):
-    if message is None:
-        return {"error": "No comment provided"}
+@app.get("/predict_bert")
+def predict_bert(message):
+    error = message_error(message)
+    if error is not None:
+        return error
 
-    # Max length is 512 so split the message into chunks
-    chunk_size = 512
+    # Split message into chunks
     sentiments = []
     confidences = []
-    for i in range(0, len(message), chunk_size):
-        chunk = message[i:i+chunk_size]
+    for i in range(0, len(message), CHUNK_SIZE):
+        chunk = message[i:i+CHUNK_SIZE]
         # Get sentiment
-        sentiment = pipeline(chunk)[0]
+        sentiment = pipeline_bert(chunk)[0]
         # Add to the list
         sentiments.append(sentiment['label'])
         confidences.append(sentiment['score'])
@@ -57,4 +66,30 @@ def predict(message):
     avg_confidence = sum(confidences) / len(confidences)
 
     # There will be some predict code here in future but for now just return a random number
+    return {"comment": message, "sentiment": sentiment, "confidence": avg_confidence}
+
+@app.get("/predict_toxic")
+def predict_toxic(message):
+    error = message_error(message)
+    if error is not None:
+        return error
+
+    # chunk message
+    sentiments = []
+    confidences = []
+    for i in range(0, len(message), CHUNK_SIZE):
+        chunk = message[i:i+CHUNK_SIZE]
+        # Get sentiment
+        sentiment = pipeline_toxic(chunk)[0]
+        # Add to the list
+        sentiments.append(sentiment['label'])
+        confidences.append(sentiment['score'])
+
+    print("Processed chunks: ", len(sentiments))
+
+    # Sentiment is the most frequently predicted label
+    # This WON'T account for a tie but we probably won't use this model so that's fine
+    sentiment = max(set(sentiments), key = sentiments.count)
+    avg_confidence = sum(confidences) / len(confidences)
+
     return {"comment": message, "sentiment": sentiment, "confidence": avg_confidence}
