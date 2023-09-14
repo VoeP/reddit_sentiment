@@ -2,7 +2,13 @@ import streamlit as st
 import requests
 
 # Api constants
-URL = "http://localhost:8080/predict"
+deployment = st.secrets.deployment.deployment
+if deployment == "LOCAL":
+    URL = "http://localhost:8000/predict"
+elif deployment == "DOCKER_LOCAL":
+    URL = "http://localhost:8080/predict"
+elif deployment == "DOCKER_GCP":
+    URL = ""    # TODO: Add GCP URL here
 
 # Setup page
 st.set_page_config(
@@ -36,5 +42,7 @@ with st.form(key='comment_form'):
                 results = response.json()
                 st.markdown(f"""### Comment
                             {results['comment']}""")
-                st.markdown(f"""### Sentiment Score
+                st.markdown(f"""### Sentiment
                             {results['sentiment']}""")
+                st.markdown(f"""### Confidence
+                            {results['confidence']}""")
