@@ -1,5 +1,6 @@
 import streamlit as st
-import requests
+import streamlit.components.v1 as components
+import requests, html
 
 # Api constants
 deployment = st.secrets.deployment.deployment
@@ -20,10 +21,17 @@ st.markdown("# Comment Sentiment Analysis")
 
 st.markdown("## Enter your comment below for analysis:")
 
+def clear_text():
+    st.session_state["comment_input"] = ""
+
 # Main form
 with st.form(key='comment_form'):
-    comment = st.text_area("Comment")
-    submit_button = st.form_submit_button("Predict Sentiment")
+    comment = st.text_area("Comment", key="comment_input")
+    col1, col2 = st.columns(2)
+    with col1:
+        submit_button = st.form_submit_button("Predict Sentiment")
+    with col2:
+        clear_button = st.form_submit_button("Reset", on_click=clear_text)
 
     # Handle form submission
     if submit_button:
@@ -41,7 +49,22 @@ with st.form(key='comment_form'):
                 # Display the results
                 results = response.json()
                 st.markdown("### Comment")
-                st.write(results['comment'])
+
+                # Incredibly jank way of displaying the comment without any markdown or latex
+                comment_with_line_breaks = html.escape(results['comment']).replace('\n', '<br>')
+                # Set height based on number of lines and set scroll if necessary
+                # (This is pretty goddamn jank)
+                scroll = False
+                height = (len(comment_with_line_breaks.split("<br>")) + 1) * 20
+                max_height = 150
+                if height > max_height:
+                    height = max_height
+                    scroll = True
+
+                # Write the html itself with styling for font
+                components.html(f"<p style=\"font-family: Sans-Serif\">{comment_with_line_breaks}</p>", height=height, scrolling=scroll)
+
+                # Now the rest of the stuff (easy)
                 st.markdown("### Sentiment")
                 st.write(results['sentiment'])
                 st.markdown("### Confidence")
