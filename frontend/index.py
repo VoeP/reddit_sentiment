@@ -40,9 +40,9 @@ with st.form(key='comment_form'):
             else:
                 # Display the results
                 results = response.json()
-                st.markdown(f"""### Comment
-                            {results['comment']}""")
-                st.markdown(f"""### Sentiment
-                            {results['sentiment']}""")
-                st.markdown(f"""### Confidence
-                            {results['confidence']}""")
+                st.markdown("### Comment")
+                st.write(results['comment'])
+                st.markdown("### Sentiment")
+                st.write(results['sentiment'])
+                st.markdown("### Confidence")
+                st.write(results['confidence'])
