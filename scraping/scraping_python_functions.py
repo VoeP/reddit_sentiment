@@ -195,4 +195,4 @@ def sentiment_barplots(df):
     plt.ylabel('Values')
     plt.title('Number fo comments in each sentiment class')
     plt.tight_layout()  # Automatically adjusts subplot parameters to give specified padding
-    plt.savefig("sentiments")
+    plt.savefig("sentiments.png")
