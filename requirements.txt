@@ -11,3 +11,4 @@ uvicorn==0.23.2
 streamlit==1.26.0
 praw==7.7.0
 prawcore==2.3.0
+jupyter==1.0.0
