@@ -9,6 +9,7 @@ run_frontend:
 update_packages:
 	pip install --upgrade pip
 	pip install -r requirements.txt
+	pip install -e ./reddit_sentiment_modules
 
 build_container_local:
 	docker build -t api .

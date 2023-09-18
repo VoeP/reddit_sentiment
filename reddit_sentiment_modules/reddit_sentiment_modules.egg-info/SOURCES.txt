@@ -1,0 +1,5 @@
+setup.py
+reddit_sentiment_modules.egg-info/PKG-INFO
+reddit_sentiment_modules.egg-info/SOURCES.txt
+reddit_sentiment_modules.egg-info/dependency_links.txt
+reddit_sentiment_modules.egg-info/top_level.txt
