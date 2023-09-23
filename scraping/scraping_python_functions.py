@@ -154,15 +154,16 @@ def process_data(data, text_column="text", tokenizer1=None, model1=None, tokeniz
 
     return data
 
-def save_current_hot_data_as_csvs(path_to_storage:str):
+def save_current_hot_data_as_csvs(path_to_storage:str, reddit=init_reddit()):
     """This function saves both the comment and post csvs to a specified location 'path_to_storage'"""
-    reddit=init_reddit()
     df_comments=get_comments_from_hot(reddit)
     df_comments=processed_data=process_data(df_comments)
     df_comments.to_csv(f"{path_to_storage}/comment_data.csv")
     df_posts=get_post_info(reddit)
     df_posts=process_data(df_posts, text_column="titles")
     df_posts.to_csv(f"{path_to_storage}/post_data.csv")
+
+
 
 
 def plot_emotions(df):
