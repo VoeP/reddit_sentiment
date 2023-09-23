@@ -1,3 +1,4 @@
 raw_data/
 .container_id_cache
 scraping/reddit_credentials.py
+.streamlit/secrets.toml
