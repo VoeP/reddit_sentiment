@@ -1,8 +1,13 @@
+import os
 from fastapi import FastAPI
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, TextClassificationPipeline
+from reddit_sentiment_modules import scraping_python_functions as spf
+import pandas as pd
 
+# Create the app object
 app = FastAPI()
 
+# Define constants
 CHUNK_SIZE = 512
 
 # Generic error function to use for all endpoints
@@ -11,25 +16,28 @@ def message_error(message):
         return {"error": "No comment provided"}
     return None
 
-# Set up some models so we can pick what we want to use
-def load_toxic_comment_model():
-    # Load the 'toxic comment' model from Hugging Face
-    model_path = "martin-ha/toxic-comment-model"
+# Generic function for loading a huggingface model
+def load_huggingface_model(model_path):
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     model = AutoModelForSequenceClassification.from_pretrained(model_path)
 
     return TextClassificationPipeline(model=model, tokenizer=tokenizer)
 
-def load_BERT_model():
-    # Load the BERT model
-    model_path = 'nlptown/bert-base-multilingual-uncased-sentiment'
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
-    model = AutoModelForSequenceClassification.from_pretrained(model_path)
 
-    return TextClassificationPipeline(model=model, tokenizer=tokenizer)
+pipeline_bert = load_huggingface_model("martin-ha/toxic-comment-model")
+pipeline_toxic = load_huggingface_model('nlptown/bert-base-multilingual-uncased-sentiment')
 
-pipeline_bert = load_BERT_model()
-pipeline_toxic = load_toxic_comment_model()
+def get_wsb_data():
+    # Find the local csv files to process
+    our_path = os.path.abspath(os.path.dirname(__file__))
+    par_dir = os.path.dirname(our_path)
+    # csvs are in data_for_plotting
+    csv_path = os.path.join(our_path, par_dir, "data_for_plotting")
+
+    # Get the csvs as dataframes
+    comment_df = pd.read_csv(os.path.join(csv_path, "comment_data.csv"))
+    post_df = pd.read_csv(os.path.join(csv_path, "post_data.csv"))
+    return comment_df, post_df
 
 # Create the root endpoint
 @app.get("/")
@@ -93,3 +101,60 @@ def predict_toxic(message):
     avg_confidence = sum(confidences) / len(confidences)
 
     return {"comment": message, "sentiment": sentiment, "confidence": avg_confidence}
+
+@app.get("/wsb_emotions")
+def wsb_sentiment():
+    comment_df, post_df = get_wsb_data()
+
+    # Create a dictionary to return
+    return_dict = {}
+    # Add the emotions
+    return_dict['joy'] = comment_df['joy'].sum()
+    return_dict['optimism'] = comment_df['optimism'].sum()
+    return_dict['anger'] = comment_df['anger'].sum()
+    return_dict['sadness'] = comment_df['sadness'].sum()
+
+    # Return it
+    return return_dict
+
+@app.get("/wsb_emotions_by_post")
+def wsb_emotions_by_post():
+    comment_df, post_df = get_wsb_data()
+
+    # Group the dataframe by 'post'
+    grouped_df = comment_df.groupby('post').agg({'sentiment': 'mean', 'joy': 'sum', 'optimism': 'sum', 'anger': 'sum', 'sadness': 'sum'})
+
+    # Convert emotion columns such that sum of all emotions is 1
+    # Iterate over all rows to do this (slow af but it works)
+    for _, row in grouped_df.iterrows():
+        # Get the sum of all emotions
+        sum_emotions = row['joy'] + row['optimism'] + row['anger'] + row['sadness']
+        # Divide each emotion by the sum
+        row['joy'] /= sum_emotions
+        row['optimism'] /= sum_emotions
+        row['anger'] /= sum_emotions
+        row['sadness'] /= sum_emotions
+
+    # Convert to dictionary and return
+    return grouped_df.to_dict(orient='index')
+
+@app.get("/wsb_sentiment_barplots_data")
+def wsb_sentiment_barplots_data():
+    comment_df, post_df = get_wsb_data()
+
+    sentiment = comment_df.groupby("sentiment").count()["text"]
+    grouped_df = comment_df.groupby("sentiment")["score"].sum().reset_index()
+    grouped_sentiment = grouped_df['sentiment']
+    grouped_score = grouped_df['score']
+
+
+    # Create a dictionary to return
+    return_dict = {}
+    return_dict['total_sentiment'] = sentiment.to_dict()
+    return_dict['sentiment'] = grouped_sentiment.to_dict()
+    return_dict['score'] = grouped_score.to_dict()
+    return_dict['comment'] = """To make plots: plot x=sentiment, y=score for score of each sentiment by upvote
+                                plot x=sentiment, y=total_sentiment for number of comments in each sentiment class"""
+
+    # Convert to dictionary and return
+    return return_dict
