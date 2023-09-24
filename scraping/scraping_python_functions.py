@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy.special import expit
 
 
 def init_reddit():
@@ -208,3 +209,28 @@ def sentiment_barplots(df):
     plt.title('Number fo comments in each sentiment class')
     plt.tight_layout()  # Automatically adjusts subplot parameters to give specified padding
     plt.savefig("sentiments.png")
+
+
+def get_most_likely_topics(comment:str, length=200)->str:
+    """Function for getting a list of topics for a comment. List is
+    then joined on ; to get it all in one column. Idea is to use apply
+    on the commend dataset column."""
+    MODEL = f"cardiffnlp/tweet-topic-21-multi"
+    tokenizer = AutoTokenizer.from_pretrained(MODEL)
+    model = AutoModelForSequenceClassification.from_pretrained(MODEL)
+    class_mapping = model.config.id2label
+    text = comment[:length]
+    tokens = tokenizer(text, return_tensors='pt')
+    output = model(**tokens)
+    scores = output[0][0].detach().numpy()
+    scores = expit(scores)
+    predictions = (scores >= 0.5) * 1
+    return(";".join([class_mapping[i] for i in range(len(predictions)) if predictions[i]]))
+
+def plot_topic_pie(df:pd.DataFrame):
+    """Plot pie of topics from output of get_most_likely_topics (refer to notebooks/topics.ipynb)"""
+    df['individual_topics'] = df['topics'].str.split(';')
+    df_expanded = df.explode('individual_topics')
+    topic_counts = df_expanded['individual_topics'].value_counts()
+    fig = px.pie(topic_counts, names=topic_counts.index, values=topic_counts.values, title='Topic Distribution')
+    fig.show()
