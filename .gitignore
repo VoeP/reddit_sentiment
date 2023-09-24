@@ -1,8 +1,5 @@
 raw_data/
 .container_id_cache
 scraping/reddit_credentials.py
-<<<<<<< HEAD
 .streamlit/secrets.toml
-=======
-**/__pycache__/
->>>>>>> master
+./__pycache__/
