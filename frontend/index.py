@@ -29,7 +29,7 @@ st.set_page_config(
 css = pathlib.Path('frontend/style.css').read_text()
 st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
-st.markdown("<div class='h1'>Comment Sentiment Analysis</div>", unsafe_allow_html=True)
+st.markdown("# Comment Sentiment Analysis")
 
 st.markdown("## Enter your comment below for analysis:")
 
@@ -79,7 +79,7 @@ with st.form(key='comment_form'):
                 st.write(results['confidence'])
 
 
-st.markdown("<div class='h2'>Currently happening on WSB:</div>", unsafe_allow_html=True)
+st.markdown("## Currently happening on WSB:")
 
 st.markdown("### Sentiment in comments")
 
