@@ -3,7 +3,7 @@ import streamlit.components.v1 as components
 import requests, html
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import pathlib
 
 # Api constants
 deployment = st.secrets.deployment.deployment
@@ -24,6 +24,10 @@ st.set_page_config(
     page_title="Comment Sentiment Analysis",
     page_icon="📝"
 )
+
+# Add external CSS to style the Streamlit app
+css = pathlib.Path('frontend/style.css').read_text()
+st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
 st.markdown("# Comment Sentiment Analysis")
 
@@ -77,7 +81,7 @@ with st.form(key='comment_form'):
 
 st.markdown("## Currently happening on WSB:")
 
-st.markdown("###        Sentiment in comments")
+st.markdown("### Sentiment in comments")
 
 st.markdown("### Composition of emotions:")
 
