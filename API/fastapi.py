@@ -142,8 +142,19 @@ def wsb_emotions_by_post():
 def wsb_sentiment_barplots_data():
     comment_df, post_df = get_wsb_data()
 
-    # Group the dataframe by 'post'
-    grouped_df = comment_df.groupby('post').agg({'sentiment': 'mean', 'score': 'sum'})
+    sentiment = comment_df.groupby("sentiment").count()["text"]
+    grouped_df = comment_df.groupby("sentiment")["score"].sum().reset_index()
+    grouped_sentiment = grouped_df['sentiment']
+    grouped_score = grouped_df['score']
+
+
+    # Create a dictionary to return
+    return_dict = {}
+    return_dict['total_sentiment'] = sentiment.to_dict()
+    return_dict['sentiment'] = grouped_sentiment.to_dict()
+    return_dict['score'] = grouped_score.to_dict()
+    return_dict['comment'] = """To make plots: plot x=sentiment, y=score for score of each sentiment by upvote
+                                plot x=sentiment, y=total_sentiment for number of comments in each sentiment class"""
 
     # Convert to dictionary and return
-    return grouped_df.to_dict(orient='index')
+    return return_dict
