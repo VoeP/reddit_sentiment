@@ -1,21 +1,129 @@
-post,sentiment,joy,optimism,anger,sadness
-3K into 23k in two days,2.0526315789473686,0.34377215488015955,0.32039564235858475,0.19463086221021042,0.14120134055104527
-Billionaires changing their view each week,2.6315789473684212,0.6137473379863089,0.1641244292873945,0.12092427559726569,0.10120395712903094
-Cisco buying cybersecurity company Splunk for $28 Billion,2.6315789473684212,0.2812386912784025,0.4022043953624638,0.1690219122513975,0.1475350011077362
-Cramer finally capitulates to meme stock mania!,2.0,0.4210723903575775,0.33803651204085716,0.07504854764050323,0.1658425499610621
-Cybertruck Spotted ⛏️,2.4903846153846154,0.33816869429991,0.428235996641102,0.04255289824208675,0.19104241081690124
-"Daily Discussion Thread for September 21, 2023",2.2751004016064256,0.3890630894513776,0.26052862843237223,0.11356784727593007,0.2368404348403201
-"Dollar General is in a ‘really bad situation,’ and investors should stay away, Jim Cramer says",2.461038961038961,0.43805067339414194,0.21826311380546998,0.12499721042934304,0.21868900237104502
-For the regards who don't know what the hell just happened,2.629090909090909,0.4122453306896532,0.22704339624864348,0.19158295751091964,0.1691283155507837
-Former professional gamer transitioning into a highly regarded trader.,2.6845238095238093,0.305293152208857,0.3254752630534989,0.25222866875513167,0.11700291598251245
-JPOW usually reads from his beloved paper sheets. Today he's reading from an iPad. $AAPL Calls. Highly regarded.,2.5384615384615383,0.2525040353624759,0.3774597877552999,0.12161051141152046,0.2484256654707037
-JPOW’s Bernie Sanders impersonation,2.1052631578947367,0.4999045523163052,0.2578954219455402,0.0777855554667834,0.16441447027137115
-Raise your hand if your holding a bag.,3.1538461538461537,0.24384045835963808,0.49100791215259665,0.06955594765372251,0.19559568183404277
-Respect the legend -- Not one down month!,3.2777777777777777,0.4684838923976173,0.2900623678718266,0.08501407569767817,0.15643966403287793
-"Somebody had a 45,650% gain in one overnight trade on $SPLK calls. Amazing luck.",2.4244186046511627,0.4649815143519617,0.2538040336606115,0.13054337491854134,0.15067107706888544
-The stock market fell sharply in response to the Federal Reserve's decision to raise interest rates. Where is our way out?,2.36697247706422,0.45878400022216537,0.1354203281456551,0.16538406093051836,0.2404116107016612
-What J Pow really meant during the FOMC,3.423076923076923,0.25430089643304293,0.5563868227783808,0.0618198619442586,0.12749241884431767
-Would you look at that. JP has you by the balls!,2.923076923076923,0.40913553779350287,0.2920082314939615,0.0928715172643372,0.20598471344819846
-avgo gains!! closed,3.4411764705882355,0.26469085053890684,0.6048338181428746,0.06040522495599216,0.0700701063622264
-⚠️Breaking: JPOW pre-FOMC press conference⚠️,3.2666666666666666,0.35163103672546303,0.46427467690239504,0.08098226900589514,0.10311201736624677
-🥶 winter is coming.,3.24,0.238828066515989,0.48342312937946896,0.11607945318580679,0.16166935091873522
+,ids,titles,scores,controversiality,bodies,original,num_comments,sentiment,joy,optimism,anger,sadness
+0,16pjtoy,"Weekend Discussion Thread for the Weekend of September 23, 2023",47,0.91,"#Come hang with us on [Discord](https://discord.gg/wsbverse)
+
+Check out last week's [Earnings Thread](https://www.reddit.com/r/wallstreetbets/comments/16m8jnr/most_anticipated_earnings_releases_for_the_week/) and [Rules](https://www.reddit.com/r/wallstreetbets/wiki/contentguide). DM the [mod inbox](https://www.reddit.com/message/compose/?to=/r/wallstreetbets)",False,3364,4,0.0,1.4606977701187134,1.006008267402649,0.0
+1,16m8jnr,"Most Anticipated Earnings Releases for the week beginning September 18th, 2023",44,0.9,,False,96,1,0.0,1.5613791942596436,0.5460531115531921,0.0
+2,16p95am,What was left unsaid,8687,0.95,,False,710,1,0.6222994923591614,0.0,0.0,1.9748040437698364
+3,16po7hx,GOP Senators File Bill To Block Biden Marijuana Rescheduling Effort Without Congressional Approval - Marijuana Moment,624,0.94,"MARIJUANA RESCHEDULING CONFIRMED 100%!! 
+
+Also fucking LOL:
+
+""Lummis said in a separate interview with Ask a Pol’s Matt Laslo that she personally doesn’t want to see her state of Wyoming move to legalize—in part because she thinks “it just doesn’t smell good” and “stinks.”",False,160,1,1.1396594047546387,0.0,0.4860153794288635,0.7757775187492371
+4,16pk1ko,"Alright boys, admit it... who got caught in today's bull trap?",944,0.93,,False,469,3,1.1982613801956177,0.0,0.5991379618644714,0.3490704894065857
+5,16pq4k9,Weekend wisdom,352,0.97,,False,31,5,0.0,1.2125418186187744,0.9219446778297424,0.0
+6,16pvac0,Jerome Buscemi,111,0.91,Credit to u/TradeTheZones for the amazing voice deepfake! ,False,10,4,0.09176087379455566,1.0981502532958984,0.0,0.0
+7,16pevy7,Citadel Securities Accused of Breaking SEC Short-Sale Label Rule,1041,0.97,,False,126,1,1.0221096277236938,0.0,0.0,1.3912911415100098
+8,16p8dx5,JPOW did nothing wrong,2335,0.95,,False,139,5,3.070340871810913,0.0,0.0,0.027868255972862244
+9,16ptd0e,"TQQQ 200k all-in. Hello darkness, my old friend",138,0.9,,False,102,5,0.0,1.7843471765518188,0.0,0.0
+10,16phxpa,"$8,000 > $51,000 TSLA PUTS",577,0.95,"It’s a crazy world we live in where we can click buttons on your phone me make $40,000+ in a week. 
+
+Just closed my positions.",False,61,1,0.48460978269577026,0.9609228372573853,0.2293996959924698,0.0
+11,16pn2fj,Blew up both accounts.,252,0.95,Well we finally did it. The market has fucked me in my ass harder than my wife’s pegging. Hopefully her boyfriend can help me get back on my feet. God speed regards,False,109,1,2.5887811183929443,0.0,0.0,0.39373672008514404
+12,16q0owo,Funny that a big firm can't differentiate between short and long. And tell SEC 'Oops. we made boo boo',28,0.94,,False,11,4,0.25742554664611816,1.217274785041809,0.0,0.3519921898841858
+13,16pkn84,You guy's make profits?,280,0.86,,False,52,1,0.3248834013938904,0.3448164761066437,0.005456329323351383,0.0
+14,16pk2tn,Now is the time of despair.,293,0.78,"&#x200B;
+
+[We can no longer kid ourselves. The bubble has popped. We have retraced the dot com bubble to the last pixel. The largest tech companies are still trading at P\/E ratios over 100. The current state of AI is not even close to the level of hype it has attracted. By this time next year, the Nasdaq-100 will have dropped to 7000. We are at the top of the bull trap. Look into Nasdaq-100 inverse ETFs.](https://preview.redd.it/hgms7csm5vpb1.png?width=681&format=png&auto=webp&s=a49de79c9c163e2e124329a2d78f057b9d8b124d)",False,131,5,0.0,0.0,0.0,3.2019522190093994
+15,16pq2qd,Blew my account,133,0.97,Finally found options around july and even started seeing great success...then the Fitch credit down grade happened and this Wednesday fed meeting took the rest. Guess I'm done for now boy's 🙉🚀 Good luck,False,69,1,2.3549623489379883,0.0,0.0,1.2252082824707031
+16,16pnnzw,They are coming for you,154,0.96,,False,25,5,2.5915963649749756,0.0,0.2339211255311966,0.0
+17,16pnycx,"For those who lost life changing amounts of money, have y’all ever thought about becoming a Catholic monk in the western world?",138,0.89,"Free food free housing free healthcare. If you divide the asset of a monastery by all the monks who live there, everyone is a multi-millionaire.
+
+And you already don’t have any assets to liquidate for their requirement of relinquishing all private possessions!",False,81,1,0.0,0.0,1.1662098169326782,1.8426222801208496
+18,16pno05,Oh how the turn tables.,118,0.92,,False,12,5,0.5406240224838257,0.0,0.1632995903491974,0.7734451293945312
+19,16pcprd,$MSOS - USA Cannabis play Price Target = $30 EOY 2023. I think Joe Biden will run on Full Recreational Legalization of Cannabis in 2024. 🚀,464,0.83,"**BACKGROUND** **🌿🔥 😎**
+
+**TL;DR** = The USA Cannabis space is a **GENERATIONAL BUYING OPPORTUNIY** near all time low stock prices. Yes we had a +60%, but this was off the all time low bottom.
+
+This is a massive ""ABRITRAIGE"" opportunity for retail as Big Money (hedge funds, institutions and other big players) cannot buy USA Cannabis stocks as it's still ""Schedule 1"" which is soon to be reclassified to ""Schedule 3"".
+
+Buying USA Cannabis stocks today is like getting in PRE-IPO after most stocks crashed -90% because the Federal Government hasn't done anything - **BUT THEY ARE NOW!**
+
+**INVESTMENT THESIS = Biden will run on FULL Cannabis legalization in 2024** **🤫**
+
+Joe Biden will run on **FULL FEDERAL CANNABIS RECREATIONAL** legalization if you vote for him in the Nov 2024 elections!!!! This will be announced shortly after he reclassifies Cannabis to from Schedule 1 to Schedule 3 medical before the end of the year.
+
+This is the Canada **Justin Trudeau ""PLAYBOOK""** where in 2015 Liberal Canadian party was in last place (3/3), then he promised Cannabis legalization and **FUCKING WON THE ELECTION!!!** 💣 💥
+
+Why does Joe Biden need this as a win? Because he DESPERATLY needs the youth vote who he is failing on Student Loans and Inflation. Also the tax revenues will help pay down the USA national debt.
+
+**CATALYST FOR CANNABIS STONKS TO RE-RATE HIGHER**   📈 💵
+
+**1)** **DEA 90-Day Schedule 3 ""Interim Ruling""** which will immediately become law and in Q1 2024 companies will be massively cash flow positive with the removal of tax 280e. **Kim Rivers CEO of Trulieve $TCNNF (who is a Lawyer herself) confirmed this on Twitter Spaces last month and who is already in talks with NASDAQ for uplisting when ready.** These USA Cannabis companies are paying an effective tax rate of \~70% right now and they can't write-off normal business expenses. This would allow up-listing to NYSE / NASDAQ.
+
+**DATE** = November 27th, 2023 or before
+
+**2a)** **SAFE Banking Act** in the Senate which will allow financial services to work with Cannabis companies to get business loans and allow up-lisintg to NYSE / NASDAQ.
+
+**DATE** = Wednesnday, September 27th for the committee vote / Mark-up and then full ""Floor-Vote"" shortly after
+
+**2b)** **""Garland Memo""** to replace the former rescinded ""Cole Memo"" which gave guidance to Financial institutions and USA Cannabis companies could up-list to NYSE / NASDAQ on this alone.
+
+**DATE** = Anytime, although some people think it would be introduced along side of SAFE Banking Act. There were also rumours that it would be introduced on October 6th, 2023 which is the 1-Year anniversary since Joe Biden announced the rescheduling review last year.
+
+**3)** **""Strategics"" entering the cannabis space** \- Big Tabaco, Big Alcohol, Big Pharma, Consumer Packaged Goods
+
+Canopy has $STZ Constellation Brands, Cronos has $MO Altria, Organigram has $BTI British American Tabaco
+
+CPG (Consumer Packaged Goods) companies are looking at the Cannabis sector too! In 2018 $KO (Coca-Cola) was in talks with $ACB (Aurora Cannabis). I would imagine that food players like **$PEP (PepsiCo)** and **$MDLZ (Mondelez)** with their snack portfolio is looking at a Cannabis partnership deal too! **The more ""HIGH"" you get, the HUNGIER you become and the more SNACKS you will eat!!!! BULLISH!!!** 🐃
+
+**DATE** = Anytime will happen out of nowhere and be massively bullish
+
+**HOW TO BUY CANNABIS STONKS**  🔥
+
+Because cannabis is still a schedule 1 narcotic, companies cannot be listed on the NYSE / NASDAQ and can only be bought OTC over the counter. As such, depending on your broker, you might only be able to buy $MSOS the USA Cannabis ETF.
+
+There is also $MSOX which is the 2x ETF.
+
+**January 2024 $20.00 strike calls** would be an interesting YOLO as it covers both:   🐋 💦
+
+**(1) SAFE Banking** and
+
+**(2) DEA 90-Day ""Interim Ruling""** (Roughly Nov 27, 2023 or earlier) which becomes immediately law
+
+When this happens, I think **stocks go 2x-3x easily**.
+
+https://preview.redd.it/v2cz7r9pntpb1.png?width=685&format=png&auto=webp&s=99de7e2addf22770b2c4aba892930e6dfa5dae2d
+
+https://preview.redd.it/viuhhb4qntpb1.png?width=670&format=png&auto=webp&s=0dbbbb5791e69926af04eb47283da9632cc0d347
+
+https://preview.redd.it/9hwiznototpb1.png?width=616&format=png&auto=webp&s=dbc929a62a7d9fbf3a5d0216e4dcd3fc29e911bf
+
+https://preview.redd.it/fiywp57sotpb1.png?width=1220&format=png&auto=webp&s=902064c050f0b1760c1b101d8993fcda976208eb
+
+https://preview.redd.it/4jqr39veiupb1.png?width=833&format=png&auto=webp&s=dfda0060638156f4231462fbe3ffd3da9c8fc6c4
+
+The ""Big 3"" USA Cannabis Company CEO's = **$CURLF (Curaleaf)** Boris Jordan + **$GTBIF (Green Thumb Industries)** Ben Klover + **$TCNNF (Trulieve)** Kim Rivers  💖
+
+https://preview.redd.it/ph9v0o1rntpb1.png?width=1917&format=png&auto=webp&s=c1b2521c7a8206ffceef1f99ebffe73ee566798a
+
+**NYSE / NASDAQ Up-listing from OTC coming - Ben Kovler, CEO of Green Thumbs Industries $GTBIF. Stocks will re-rate higher as BIG MONEY will finally be able to enter the Cannabis sector.**  🔔
+
+https://preview.redd.it/tayn6j1z7upb1.png?width=962&format=png&auto=webp&s=5abb9584e60f52324d875053a4fe0fb2dd893b09
+
+**The removal of 280e tax The adjustment would add approximately $700 million to the 2023 FCF of the companies reviewed.**  🍆
+
+https://preview.redd.it/i5htvwyrntpb1.png?width=960&format=png&auto=webp&s=0ad6efe73e3e85bd50f4bce469f7116f8e75d10d
+
+**TECHNICAL ANALYSIS**
+
+$MSOS has a +600% gain to get back to all time highs. Also the volume is massive... you know the saying ""**VOLUME precedes price action**""  🍋
+
+https://preview.redd.it/ktkijl8tntpb1.png?width=1495&format=png&auto=webp&s=b69b74084e00049707759249a0c7da2aabaa7fcb
+
+**There are BULLISH signs starting to emerge, such as INVERSE JIM CRAMER saying ""Tilray is TOO DANGEROUS""** **just 4 days ago** 😉
+
+https://preview.redd.it/m9fsq3o7nupb1.png?width=1448&format=png&auto=webp&s=37251a6fd51d2bfdc1b8833d6f121d8b4aff3190
+
+**Election positioning already starting ahead of the 12-month countdown ahead of the November 2024 USA election!**  🌊
+
+https://preview.redd.it/b1pct5gvntpb1.png?width=1042&format=png&auto=webp&s=65a00300a7c6032c33bcf7513e3c2dab5865bb05
+
+https://preview.redd.it/k7asyoxeotpb1.png?width=1095&format=png&auto=webp&s=b17c63554f16dbb7123e535a7e05d547a92c8a36
+
+\------------
+
+**EDIT:** I love how there is so much ""**disbelief**"" in the comment section.
+
+This tells me that when Cannabis enters the **3rd ""bull market cycle"" (2013 California, 2018 Canada, and now 2023/2024 USA and GERMANY)**, some of you chase at the top +600% higher (as usual)  😇
+
+https://preview.redd.it/f4sdmv22mupb1.png?width=811&format=png&auto=webp&s=29a57c2d7ce9c9b269e151bb8a23c94415a824e1",False,288,1,0.0,0.7852572202682495,1.9184048175811768,0.0
