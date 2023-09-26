@@ -153,8 +153,8 @@ def wsb_sentiment_barplots_data():
     return_dict['total_sentiment'] = sentiment.to_dict()
     return_dict['sentiment'] = grouped_sentiment.to_dict()
     return_dict['score'] = grouped_score.to_dict()
-    return_dict['comment'] = """To make plots: plot x=sentiment, y=score for score of each sentiment by upvote
-                                plot x=sentiment, y=total_sentiment for number of comments in each sentiment class"""
+    # return_dict['comment'] = """To make plots: plot x=sentiment, y=score for score of each sentiment by upvote
+                                # plot x=sentiment, y=total_sentiment for number of comments in each sentiment class"""
 
     # Convert to dictionary and return
     return return_dict
