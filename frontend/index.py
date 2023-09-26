@@ -143,17 +143,17 @@ else:
     # Create a dataframe from the dictionary
     df = pd.DataFrame.from_dict(results, orient='index').reset_index()
     # Rename index to 'post'
-    df.rename(columns={'index': 'post'}, inplace=True)
+    df.rename(columns={'index': 'id'}, inplace=True)
 
     # Create a figure
     fig = go.Figure()
 
     # Add bar trace for emotion strengths
     for emotion in ["joy", "optimism", "anger", "sadness"]:
-        fig.add_trace(go.Bar(x=df['post'], y=df[emotion], name=emotion))
+        fig.add_trace(go.Bar(x=df['id'], y=df[emotion], name=emotion))
 
     # Add bar trace for sentiment
-    fig.add_trace(go.Bar(x=df['post'], y=df['sentiment'], name='Sentiment', width=0.15))
+    fig.add_trace(go.Bar(x=df['id'], y=df['sentiment'], name='Sentiment', width=0.15))
 
     # Update layout to include dual y-axes and custom legend
     fig.update_layout(
@@ -172,3 +172,6 @@ else:
 
     # Display the figure using Streamlit
     st.plotly_chart(fig)
+
+    # Print out the dataframe with ids and corresponding posts
+    st.dataframe(df[['id', 'post']])

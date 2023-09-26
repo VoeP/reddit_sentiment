@@ -121,8 +121,11 @@ def wsb_sentiment():
 def wsb_emotions_by_post():
     comment_df, post_df = get_wsb_data()
 
-    # Group the dataframe by 'post'
-    grouped_df = comment_df.groupby('post').agg({'sentiment': 'mean', 'joy': 'sum', 'optimism': 'sum', 'anger': 'sum', 'sadness': 'sum'})
+    # Merge the dataframes on comment_df['post'], post_df['titles'] to include ID
+    comment_df = comment_df.merge(post_df[['ids', 'titles']], left_on='post', right_on='titles')
+
+    # Group the dataframe by post id and aggregate the emotions
+    grouped_df = comment_df.groupby('ids').agg({'sentiment': 'mean', 'joy': 'sum', 'optimism': 'sum', 'anger': 'sum', 'sadness': 'sum', 'post': 'first'})
 
     # Convert emotion columns such that sum of all emotions is 1
     # Iterate over all rows to do this (slow af but it works)
