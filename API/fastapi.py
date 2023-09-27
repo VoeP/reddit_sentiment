@@ -24,8 +24,8 @@ def load_huggingface_model(model_path):
     return TextClassificationPipeline(model=model, tokenizer=tokenizer)
 
 
-pipeline_bert = load_huggingface_model("martin-ha/toxic-comment-model")
-pipeline_toxic = load_huggingface_model('nlptown/bert-base-multilingual-uncased-sentiment')
+pipeline_bert = load_huggingface_model("nlptown/bert-base-multilingual-uncased-sentiment")
+pipeline_toxic = load_huggingface_model('martin-ha/toxic-comment-model')
 
 def get_wsb_data():
     # Find the local csv files to process
@@ -121,8 +121,11 @@ def wsb_sentiment():
 def wsb_emotions_by_post():
     comment_df, post_df = get_wsb_data()
 
-    # Group the dataframe by 'post'
-    grouped_df = comment_df.groupby('post').agg({'sentiment': 'mean', 'joy': 'sum', 'optimism': 'sum', 'anger': 'sum', 'sadness': 'sum'})
+    # Merge the dataframes on comment_df['post'], post_df['titles'] to include ID
+    comment_df = comment_df.merge(post_df[['ids', 'titles']], left_on='post', right_on='titles')
+
+    # Group the dataframe by post id and aggregate the emotions
+    grouped_df = comment_df.groupby('ids').agg({'sentiment': 'mean', 'joy': 'sum', 'optimism': 'sum', 'anger': 'sum', 'sadness': 'sum', 'post': 'first'})
 
     # Convert emotion columns such that sum of all emotions is 1
     # Iterate over all rows to do this (slow af but it works)
@@ -153,8 +156,8 @@ def wsb_sentiment_barplots_data():
     return_dict['total_sentiment'] = sentiment.to_dict()
     return_dict['sentiment'] = grouped_sentiment.to_dict()
     return_dict['score'] = grouped_score.to_dict()
-    return_dict['comment'] = """To make plots: plot x=sentiment, y=score for score of each sentiment by upvote
-                                plot x=sentiment, y=total_sentiment for number of comments in each sentiment class"""
+    # return_dict['comment'] = """To make plots: plot x=sentiment, y=score for score of each sentiment by upvote
+                                # plot x=sentiment, y=total_sentiment for number of comments in each sentiment class"""
 
     # Convert to dictionary and return
     return return_dict

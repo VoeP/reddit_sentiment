@@ -18,8 +18,6 @@ elif deployment == "DOCKER_GCP":
 
 # Get the endpoint from secrets
 endpoint = st.secrets.deployment.endpoint
-# Add it to the url
-URL += endpoint
 
 # Setup page
 st.set_page_config(
@@ -33,7 +31,7 @@ st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
 st.markdown("# Comment Sentiment Analysis")
 
-st.markdown("## Enter your comment below for analysis:")
+st.markdown("## Analyse a Comment")
 
 def clear_text():
     st.session_state["comment_input"] = ""
@@ -55,7 +53,7 @@ with st.form(key='comment_form'):
         else:
             # Make an API request
             params = {"message": comment}
-            response = requests.get(URL, params=params)
+            response = requests.get(URL + endpoint, params=params)
             # Check the response is valid
             if response.status_code != 200:
                 st.error("There was an error with the API request.")
@@ -81,27 +79,22 @@ with st.form(key='comment_form'):
                 st.write(results['confidence'])
 
 
-st.markdown("## Currently happening on WSB:")
 
-st.markdown("### Sentiment in comments")
+# Call the API to get the emotions
+response = requests.get(URL + "wsb_emotions")
+if response.status_code != 200:
+    st.markdown("There was an error with the wsb_emotions API endpoint.")
+else:
+    st.markdown("## Currently happening on Wall Street Bets:")
+    st.markdown("### How is WSB feeling?")
+    st.markdown("#### Overall Sentiment and Emotive Strength")
 
-st.markdown("### Composition of emotions:")
+    result = response.json()
+    # Get the data from the result
+    keys = list(result.keys())
+    data = list(result.values())
 
-df = pd.read_csv("data_for_plotting/comment_data.csv")
-if df is not None:
-
-    #st.write(df)
-    sum_joy = df["joy"].sum()
-    sum_optimism = df["optimism"].sum()
-    sum_anger = df["anger"].sum()
-    sum_sadness = df["sadness"].sum()
-
-    keys=["joy", "optimism", "anger", "sadness"]
-    data=[sum_joy,
-        sum_optimism,
-        sum_anger,
-        sum_sadness]
-
+    # Create the plotly figures
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 6))
 
     # Plotting the pie chart
@@ -115,21 +108,21 @@ if df is not None:
     st.plotly_chart(fig_pie)
     st.plotly_chart(fig_bar)
 
+st.markdown("#### Sentiment by Upvotes and Comment Count")
 
-st.markdown("### Composition of sentiment and upvotes:")
-
-if df is not None:
-    sents=df.groupby("sentiment").count()["text"]
-    grouped_df = df.groupby("sentiment")["score"].sum().reset_index()
-    plt.figure(figsize=(18, 6))
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 6))
+# Call the API for the data
+response = requests.get(URL + "wsb_sentiment_barplots_data")
+if response.status_code != 200:
+    str.markdown("There was an error with the wsb_sentiment_barplots_data API endpoint.")
+else:
+    results = response.json()
 
     # Plotting the bar chart for scores
-    fig_score = px.bar(x=grouped_df["sentiment"], y=grouped_df["score"], labels={'x': 'Sentiment', 'y': 'Score'},
+    fig_score = px.bar(x=results["sentiment"], y=results["score"], labels={'x': 'Sentiment', 'y': 'Number of Upvotes'},
                    title='Score of each sentiment by upvotes')
 
     # Create a bar chart for comment counts using Plotly Express
-    fig_comments = px.bar(x=grouped_df["sentiment"], y=sents, labels={'x': 'Sentiment', 'y': 'Number of Comments'},
+    fig_comments = px.bar(x=results["sentiment"], y=results["total_sentiment"], labels={'x': 'Sentiment', 'y': 'Number of Comments'},
                       title='Number of comments in each sentiment class')
 
     # Display the figures using Streamlit
@@ -137,28 +130,34 @@ if df is not None:
 
     st.plotly_chart(fig_comments)
 
+st.markdown("#### Sentiment and Emotions by Post")
+st.markdown("Hover over the bars to see the post title.")
+st.markdown("Sentiment is the average sentiment of all comments in the post, with values ranging from 1 to 5 stars. The higher the value, the more positive the sentiment.")
+st.markdown("Emotive strength is the cumulative sum of the emotion strengths of all comments in the post. The higher the value, the more emotive the post.")
 
-st.markdown("### Sentiment in posts:")
+# Call the API to get the dictionary
+response = requests.get(URL + "wsb_emotions_by_post")
+if response.status_code != 200:
+    st.markdown("There was an error with the wsb_emotions_by_post API endpoint.")
+else:
+    results = response.json()
+    # Create a dataframe from the dictionary
+    df = pd.DataFrame.from_dict(results, orient='index').reset_index()
+    # Rename index to 'post'
+    df.rename(columns={'index': 'id'}, inplace=True)
 
-df_posts = pd.read_csv("data_for_plotting/post_data.csv", index_col="ids")
+    st.markdown("##### Post sentiment breakdown")
 
-if df_posts is not None:
-    df = df_posts
-    # Create a figure
+    # Create the plotly figure for sentiment composition
     fig = go.Figure()
 
-    # Add bar trace for emotion strengths
-    for emotion in ["joy", "optimism", "anger", "sadness"]:
-        fig.add_trace(go.Bar(x=df.index, y=df[emotion], name=emotion))
-
     # Add bar trace for sentiment
-    fig.add_trace(go.Bar(x=df.index, y=df['sentiment'], name='Sentiment', width=0.15))
+    fig.add_trace(go.Bar(x=df['id'], y=df['sentiment'], name='Sentiment'))
 
-    # Update layout to include dual y-axes and custom legend
+
     fig.update_layout(
         xaxis=dict(title='Post ids'),
-        yaxis=dict(title='Emotion Strength', side='left', showgrid=False),
-        yaxis2=dict(title='Sentiment', overlaying='y', side='right', showgrid=False),
+        yaxis=dict(title='Sentiment Value', side='left', showgrid=False),
         title='Post sentiment breakdown',
         legend=dict(
         x=0.5,
@@ -169,6 +168,69 @@ if df_posts is not None:
         )
     )
 
+    fig.update_traces(hovertext=list(df['post']))
+
+    st.plotly_chart(fig)
+
+    st.markdown("##### Post emotion breakdown")
+
+    # Create a figure
+    fig = go.Figure()
+
+    # Add bar trace for emotion strengths
+    for emotion in ["joy", "optimism", "anger", "sadness"]:
+        fig.add_trace(go.Bar(x=df['id'], y=df[emotion], name=emotion))
+
+    # Update layout to include custom legend
+    fig.update_layout(
+        xaxis=dict(title='Post ids'),
+        yaxis=dict(title='Emotion Strength', side='left', showgrid=False),
+        title='Post emotion breakdown',
+        legend=dict(
+        x=0.5,
+        y=1.3,
+        traceorder='normal',
+        orientation='h',
+        title='Legend'
+        )
+    )
+
+    fig.update_traces(hovertext=list(df['post']))
+
     # Display the figure using Streamlit
     st.plotly_chart(fig)
-    st.write(df_posts["titles"])
+
+
+    # Let's also display the highest joy, etc. posts
+    emotions = [('sentiment', 'Highest Sentiment Posts'), ('joy', 'Most Joyful Posts'), ('optimism', 'Most Optimistic Posts'), ('anger', 'Angriest Post'), ('sadness', 'Saddest Posts')]
+    for emotion, title in emotions:
+        st.markdown('#### Most Emotive Posts')
+        st.markdown(f'##### {title}')
+
+        # Get the top 3 most joyful posts
+        most_joyful = df.sort_values(by=emotion, ascending=False).head(3)
+        # Show the emotion composition in a chart
+        fig = go.Figure()
+
+        fig.add_trace(go.Bar(x=most_joyful['id'], y=most_joyful[emotion], name=emotion))
+
+        # The post title is the chart title
+        title = f"Top 3 {title}"
+
+        # Update the layout
+        fig.update_layout(
+            xaxis=dict(title='Post title'),
+            yaxis=dict(title='Emotion Strength', side='left', showgrid=False),
+            title=title,
+        )
+
+        # Add hover text when user hovers over the xtick labels to show the post title
+        fig.update_traces(hovertext=list(most_joyful['post']))
+
+        # Actually display the figure lol
+        st.plotly_chart(fig)
+
+    st.markdown("#### Raw Data")
+
+    # Print out the dataframe with ids and corresponding posts
+    st.dataframe(df)
