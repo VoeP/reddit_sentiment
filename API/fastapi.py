@@ -24,8 +24,8 @@ def load_huggingface_model(model_path):
     return TextClassificationPipeline(model=model, tokenizer=tokenizer)
 
 
-pipeline_bert = load_huggingface_model("martin-ha/toxic-comment-model")
-pipeline_toxic = load_huggingface_model('nlptown/bert-base-multilingual-uncased-sentiment')
+pipeline_bert = load_huggingface_model("nlptown/bert-base-multilingual-uncased-sentiment")
+pipeline_toxic = load_huggingface_model('martin-ha/toxic-comment-model')
 
 def get_wsb_data():
     # Find the local csv files to process
