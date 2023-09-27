@@ -65,9 +65,11 @@ def get_post_info(reddit, num=20, subreddit="wallstreetbets"):
     titles=[]
     scores=[]
     controversiality=[]
+    dates=[]
     for i in subreddit.hot(limit=num):
         submission=reddit.submission(i)
         ids.append(str(submission.id))
+        dates.append(submission.created_utc)
         bodies.append(''+str(submission.selftext))
         original_content_flag.append(str(submission.is_original_content))
         num_comments.append(str(submission.num_comments))
@@ -76,7 +78,7 @@ def get_post_info(reddit, num=20, subreddit="wallstreetbets"):
         controversiality.append(str(submission.upvote_ratio))
     breakpoint()
 
-    post_df=pd.DataFrame.from_dict({"ids":ids, "titles":titles, "scores": scores, "controversiality":controversiality,
+    post_df=pd.DataFrame.from_dict({"ids":ids, "titles":titles, "date_utc":dates, "scores": scores, "controversiality":controversiality,
                                     "bodies": bodies, "original":original_content_flag, "num_comments": num_comments})
     return post_df
 
