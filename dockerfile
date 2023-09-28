@@ -7,15 +7,17 @@ COPY API /API
 COPY requirements.txt /requirements.txt
 COPY makefile /makefile
 COPY reddit_sentiment_modules /reddit_sentiment_modules
-
-# No model yet but when we have one we will copy the model at this point
-# COPY models/blah /model
+COPY scripts/scrape_reddit_data.py /scripts/scrape_reddit_data.py
+# Grab any pre-existing data
+COPY reddit_data /reddit_data
+COPY run_services.sh /run_services.sh
 
 # Run the makefile to install requirements (upgrades pip and install requirements)
 RUN make update_packages
 
-# Start the API (locally)
-CMD uvicorn API.fastapi:app --host 0.0.0.0
+# Make run services executable
+RUN chmod +x run_services.sh
 
-# Start the API (once on GCP)
-# CMD uvicorn API.fastapi:app --host 0.0.0.0 --port $PORT
+# Run it
+# IMPORTANT!! This is where the code for hosting the API runs from
+CMD ["./run_services.sh"]
