@@ -5,15 +5,19 @@ FROM python:3.10.6-buster
 # Syntax COPY [source] [destination]
 COPY API /API
 COPY requirements.txt /requirements.txt
-COPY makefile /makefile
-COPY reddit_sentiment_modules /reddit_sentiment_modules
+COPY reddit_sentiment_modules/*.py /reddit_sentiment_modules/
 COPY scripts/scrape_reddit_data.py /scripts/scrape_reddit_data.py
 # Grab any pre-existing data
 COPY reddit_data /reddit_data
 COPY run_services.sh /run_services.sh
 
-# Run the makefile to install requirements (upgrades pip and install requirements)
-RUN make update_packages
+# Upgrade pip
+RUN pip install --upgrade pip
+# Install packages
+RUN pip install -r requirements.txt
+# Move setup.py to root because of stupid Docker reasons
+RUN mv reddit_sentiment_modules/setup.py .
+RUN pip install .
 
 # Make run services executable
 RUN chmod +x run_services.sh
