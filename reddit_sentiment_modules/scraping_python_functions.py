@@ -25,9 +25,6 @@ def init_reddit():
     return reddit
 
 
-
-
-
 def get_comments_from_hot(reddit, num=20, subreddit="wallstreetbets"):
     """Gets the comment dataset from num first posts in the hot category from subreddit. reddit is the
     connection specified with praw, which can be initialized using the init_reddit function."""
@@ -36,22 +33,67 @@ def get_comments_from_hot(reddit, num=20, subreddit="wallstreetbets"):
     score=[]
     level=[]
     posts=[]
+    urls = []
     for i in subreddit.hot(limit=num):
         submission=reddit.submission(i)
+        url = submission.url
         for top_level_comment in submission.comments:
             try:
                 text.append(top_level_comment.body)
                 score.append(top_level_comment.score)
                 level.append("top")
                 posts.append(submission.title)
+                urls.append(url)
                 for second_level_comment in top_level_comment.replies:
                     text.append(second_level_comment.body)
                     score.append(second_level_comment.score)
                     level.append("second")
                     posts.append(submission.title)
+                    urls.append(url)
             except AttributeError:
                 pass
     df_comments = pd.DataFrame.from_dict({"text":text, "score":score, "level":level,"post": posts})
+    return df_comments
+
+def get_comments_from_hot_recursive(reddit, num=20, subreddit="wallstreetbets", max_depth=None, verbose=False):
+    """Gets the comment data set and recursively crawls the comments"""
+    def get_comments(submission, url, title, depth=1):
+        thread = submission.comments if depth == 1 else submission.replies
+        # Don't exceed max_depth
+        if max_depth is not None and depth == max_depth:
+            return
+
+        if verbose >= 2:
+            print(f"Scraping comments from {url} at depth {depth}")
+
+        for comment in thread:
+            try:
+                text.append(comment.body)
+                score.append(comment.score)
+                level.append(depth)
+                posts.append(title)
+                urls.append(url)
+                get_comments(comment, url, title, depth+1)
+            except AttributeError:
+                pass
+
+    subreddit = reddit.subreddit(subreddit)
+    text = []
+    score = []
+    level = []
+    posts = []
+    urls = []
+    for i in subreddit.hot(limit=num):
+        submission = reddit.submission(i)
+        title = submission.title
+        url = submission.permalink
+        get_comments(submission, url, title)
+
+    if verbose >= 1:
+        print(f"Collected {len(text)} comments")
+        print(f"Max depth: {max(level)}")
+
+    df_comments = pd.DataFrame.from_dict({"text": text, "score": score, "level": level, "post": posts, "url": urls})
     return df_comments
 
 
@@ -66,6 +108,7 @@ def get_post_info(reddit, num=20, subreddit="wallstreetbets"):
     titles=[]
     scores=[]
     controversiality=[]
+    urls = []
     for i in subreddit.hot(limit=num):
         submission=reddit.submission(i)
         ids.append(str(submission.id))
@@ -75,6 +118,7 @@ def get_post_info(reddit, num=20, subreddit="wallstreetbets"):
         titles.append(str(submission.title))
         scores.append(str(submission.score))
         controversiality.append(str(submission.upvote_ratio))
+        urls.append(submission.permalink)
     breakpoint()
 
     post_df=pd.DataFrame.from_dict({"ids":ids, "titles":titles, "scores": scores, "controversiality":controversiality,

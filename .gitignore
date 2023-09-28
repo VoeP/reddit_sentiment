@@ -3,3 +3,4 @@ raw_data/
 scraping/reddit_credentials.py
 .streamlit/secrets.toml
 ./__pycache__/
+reddit_data/

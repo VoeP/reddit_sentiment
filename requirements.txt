@@ -14,3 +14,4 @@ prawcore==2.3.0
 jupyter==1.0.0
 plotly==5.17.0
 scipy==1.11.2
+schedule==1.2.0
