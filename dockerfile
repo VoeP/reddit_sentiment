@@ -3,6 +3,7 @@ FROM python:3.10.6-buster
 
 # Copy API, requirements and the makefile
 # Syntax COPY [source] [destination]
+COPY setup.py /setup.py
 COPY API /API
 COPY requirements.txt /requirements.txt
 COPY reddit_sentiment_modules/*.py /reddit_sentiment_modules/
@@ -16,8 +17,7 @@ COPY run_services.sh /run_services.sh
 RUN pip install --upgrade pip
 # Install packages
 RUN pip install -r requirements.txt
-# Move setup.py to root because of stupid Docker reasons
-RUN mv reddit_sentiment_modules/setup.py .
+# Install local package 
 RUN pip install .
 
 # Make run services executable
