@@ -5,17 +5,24 @@ FROM python:3.10.6-buster
 # Syntax COPY [source] [destination]
 COPY API /API
 COPY requirements.txt /requirements.txt
-COPY makefile /makefile
-COPY reddit_sentiment_modules /reddit_sentiment_modules
+COPY reddit_sentiment_modules/*.py /reddit_sentiment_modules/
+COPY scripts/scrape_reddit_data.py /scripts/scrape_reddit_data.py
+COPY scripts/print_credentials.py /scripts/print_credentials.py
+# Grab any pre-existing data
+COPY reddit_data /reddit_data
+COPY run_services.sh /run_services.sh
 
-# No model yet but when we have one we will copy the model at this point
-# COPY models/blah /model
+# Upgrade pip
+RUN pip install --upgrade pip
+# Install packages
+RUN pip install -r requirements.txt
+# Move setup.py to root because of stupid Docker reasons
+RUN mv reddit_sentiment_modules/setup.py .
+RUN pip install .
 
-# Run the makefile to install requirements (upgrades pip and install requirements)
-RUN make update_packages
+# Make run services executable
+RUN chmod +x run_services.sh
 
-# Start the API (locally)
-CMD uvicorn API.fastapi:app --host 0.0.0.0
-
-# Start the API (once on GCP)
-# CMD uvicorn API.fastapi:app --host 0.0.0.0 --port $PORT
+# Run it
+# IMPORTANT!! This is where the code for hosting the API runs from
+CMD ["./run_services.sh"]

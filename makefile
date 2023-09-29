@@ -13,7 +13,7 @@ update_packages:
 
 build_container_local:
 	docker build -t api .
-	docker run -p 8080:8000 api
+	docker run -p 8080:8000 -e REDDIT_CLIENT_ID -e REDDIT_CLIENT_SECRET -e REDDIT_SCRAPE_USERNAME -e REDDIT_SCRAPE_PASSWORD -e REDDIT_SCRAPE_AGENT -e REDDIT_SCRAPE_REDIRECT api
 
 stop_container:
 	CONTAINER_ID=$$(docker ps -q --filter "ancestor=api"); \

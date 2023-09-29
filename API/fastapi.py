@@ -32,11 +32,15 @@ def get_wsb_data():
     our_path = os.path.abspath(os.path.dirname(__file__))
     par_dir = os.path.dirname(our_path)
     # csvs are in data_for_plotting
-    csv_path = os.path.join(our_path, par_dir, "data_for_plotting")
+    csv_path = os.path.join(our_path, par_dir, "reddit_data")
 
-    # Get the csvs as dataframes
-    comment_df = pd.read_csv(os.path.join(csv_path, "comment_data.csv"))
-    post_df = pd.read_csv(os.path.join(csv_path, "post_data.csv"))
+    # Find all csvs in the folder
+    all_csvs = os.listdir(csv_path)
+    # they're of the format reddit_comments_yyyy_mm_dd.csv and reddit_posts_yyyy_mm_dd.csv so filter and sort
+    comments_csvs = sorted([csv for csv in all_csvs if "comments" in csv])
+    posts_csvs = sorted([csv for csv in all_csvs if "posts" in csv])
+    comment_df = pd.read_csv(os.path.join(csv_path, comments_csvs[-1]))
+    post_df = pd.read_csv(os.path.join(csv_path, posts_csvs[-1]))
     return comment_df, post_df
 
 # Create the root endpoint
@@ -125,7 +129,7 @@ def wsb_emotions_by_post():
     comment_df = comment_df.merge(post_df[['ids', 'titles']], left_on='post', right_on='titles')
 
     # Group the dataframe by post id and aggregate the emotions
-    grouped_df = comment_df.groupby('ids').agg({'sentiment': 'mean', 'joy': 'sum', 'optimism': 'sum', 'anger': 'sum', 'sadness': 'sum', 'post': 'first'})
+    grouped_df = comment_df.groupby('ids').agg({'sentiment': 'mean', 'joy': 'sum', 'optimism': 'sum', 'anger': 'sum', 'sadness': 'sum', 'post': 'first', 'url': 'first'})
 
     # Convert emotion columns such that sum of all emotions is 1
     # Iterate over all rows to do this (slow af but it works)

@@ -119,10 +119,10 @@ def get_post_info(reddit, num=20, subreddit="wallstreetbets"):
         scores.append(str(submission.score))
         controversiality.append(str(submission.upvote_ratio))
         urls.append(submission.permalink)
-    breakpoint()
 
-    post_df=pd.DataFrame.from_dict({"ids":ids, "titles":titles, "scores": scores, "controversiality":controversiality,
-                                    "bodies": bodies, "original":original_content_flag, "num_comments": num_comments})
+    post_df=pd.DataFrame.from_dict({"ids": ids, "titles": titles, "scores": scores, "controversiality": controversiality,
+                                    "bodies": bodies, "original":original_content_flag, "num_comments": num_comments,
+                                    "url": urls})
     return post_df
 
 
