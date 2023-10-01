@@ -2,7 +2,7 @@
 
 # Install packages
 # We do this here because otherwise it makes the docker image fucking massive
-RUN pip install -r requirements.txt
+pip install -r requirements.txt
 
 # First run the print_credentials script which will verify that the environment variables are correctly configured
 echo "Please verify these credentials are as expected otherwise data collection will not work"
