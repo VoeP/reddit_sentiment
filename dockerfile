@@ -15,8 +15,6 @@ COPY run_services.sh /run_services.sh
 
 # Upgrade pip
 RUN pip install --upgrade pip
-# Install packages
-RUN pip install -r requirements.txt
 # Install local package 
 RUN pip install .
 
