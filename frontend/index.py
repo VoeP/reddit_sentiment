@@ -14,7 +14,7 @@ if deployment == "LOCAL":
 elif deployment == "DOCKER_LOCAL":
     URL = "http://localhost:8080/"
 elif deployment == "DOCKER_GCP":
-    URL = "https://test-cont-bcmupioatq-nw.a.run.app/"
+    URL = "https://redditdata-fjs6hewsza-ew.a.run.app/"
 
 # Get the endpoint from secrets
 endpoint = st.secrets.deployment.endpoint
