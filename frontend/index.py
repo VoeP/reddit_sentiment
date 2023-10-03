@@ -14,7 +14,7 @@ if deployment == "LOCAL":
 elif deployment == "DOCKER_LOCAL":
     URL = "http://localhost:8080/"
 elif deployment == "DOCKER_GCP":
-    URL = "https://apiv2-fjs6hewsza-ew.a.run.app"
+    URL = "https://apiv2-fjs6hewsza-ew.a.run.app/"
 
 # Setup page
 st.set_page_config(
