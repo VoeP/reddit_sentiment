@@ -1,5 +1,6 @@
 import os
 from fastapi import FastAPI
+import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, TextClassificationPipeline
 from reddit_sentiment_modules import scraping_python_functions as spf
 import pandas as pd
@@ -23,9 +24,16 @@ def load_huggingface_model(model_path):
 
     return TextClassificationPipeline(model=model, tokenizer=tokenizer)
 
+# Generic function for getting tokenizer and model from huggingface
+def load_huggingface_tokenizer_model(model_path):
+    tokenizer = AutoTokenizer.from_pretrained(model_path)
+    model = AutoModelForSequenceClassification.from_pretrained(model_path)
+
+    return tokenizer, model
+
 
 pipeline_bert = load_huggingface_model("nlptown/bert-base-multilingual-uncased-sentiment")
-pipeline_toxic = load_huggingface_model('martin-ha/toxic-comment-model')
+emotions_tokeniser, emotions_model = load_huggingface_tokenizer_model("cardiffnlp/twitter-roberta-base-emotion")
 
 def get_wsb_data():
     # Find the local csv files to process
@@ -50,8 +58,8 @@ def index():
 
 # Create the predict endpoint
 # Example usage in browser: http://localhost:8000/predict?message=Hello
-@app.get("/predict_bert")
-def predict_bert(message):
+@app.get("/predict_message")
+def predict_message(message):
     error = message_error(message)
     if error is not None:
         return error
@@ -59,6 +67,7 @@ def predict_bert(message):
     # Split message into chunks
     sentiments = []
     confidences = []
+    emotions = []
     for i in range(0, len(message), CHUNK_SIZE):
         chunk = message[i:i+CHUNK_SIZE]
         # Get sentiment
@@ -66,6 +75,13 @@ def predict_bert(message):
         # Add to the list
         sentiments.append(sentiment['label'])
         confidences.append(sentiment['score'])
+
+        # Get the emotions - they will just be a dictionary
+        inputs = emotions_tokeniser(message, return_tensors="pt")
+        with torch.no_grad():
+            logits = emotions_model(**inputs).logits.tolist()[0]
+            emotions.append({"joy": logits[0], "optimism": logits[1], "anger": logits[2], "sadness": logits[3]})
+
 
     print("Processed chunks: ", len(sentiments))
 
@@ -77,34 +93,14 @@ def predict_bert(message):
     sentiment = str(avg_sentiment) + " stars"
     avg_confidence = sum(confidences) / len(confidences)
 
+    # Emotions are just averaged over each emotion in the list
+    avg_emotions = {}
+    for emotion in ["joy", "optimism", "anger", "sadness"]:
+        avg_emotions[emotion] = sum([e[emotion] for e in emotions]) / len(emotions)
+
     # There will be some predict code here in future but for now just return a random number
-    return {"comment": message, "sentiment": sentiment, "confidence": avg_confidence}
+    return {"comment": message, "sentiment": sentiment, "sentiment_confidence": avg_confidence, "emotions": avg_emotions}
 
-@app.get("/predict_toxic")
-def predict_toxic(message):
-    error = message_error(message)
-    if error is not None:
-        return error
-
-    # chunk message
-    sentiments = []
-    confidences = []
-    for i in range(0, len(message), CHUNK_SIZE):
-        chunk = message[i:i+CHUNK_SIZE]
-        # Get sentiment
-        sentiment = pipeline_toxic(chunk)[0]
-        # Add to the list
-        sentiments.append(sentiment['label'])
-        confidences.append(sentiment['score'])
-
-    print("Processed chunks: ", len(sentiments))
-
-    # Sentiment is the most frequently predicted label
-    # This WON'T account for a tie but we probably won't use this model so that's fine
-    sentiment = max(set(sentiments), key = sentiments.count)
-    avg_confidence = sum(confidences) / len(confidences)
-
-    return {"comment": message, "sentiment": sentiment, "confidence": avg_confidence}
 
 @app.get("/wsb_emotions")
 def wsb_sentiment():

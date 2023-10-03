@@ -14,10 +14,7 @@ if deployment == "LOCAL":
 elif deployment == "DOCKER_LOCAL":
     URL = "http://localhost:8080/"
 elif deployment == "DOCKER_GCP":
-    URL = "https://redditdata-fjs6hewsza-ew.a.run.app/"
-
-# Get the endpoint from secrets
-endpoint = st.secrets.deployment.endpoint
+    URL = "https://apiv2-fjs6hewsza-ew.a.run.app"
 
 # Setup page
 st.set_page_config(
@@ -53,7 +50,7 @@ with st.form(key='comment_form'):
         else:
             # Make an API request
             params = {"message": comment}
-            response = requests.get(URL + endpoint, params=params)
+            response = requests.get(URL + "predict_message", params=params)
             # Check the response is valid
             if response.status_code != 200:
                 st.error("There was an error with the API request.")
@@ -74,9 +71,27 @@ with st.form(key='comment_form'):
 
                 # Now the rest of the stuff (easy)
                 st.markdown("### Sentiment")
-                st.write(results['sentiment'])
+                # Convert the sentiment into emojis
+                sentiment = int(results['sentiment'][0])
+                st.markdown("⭐" * sentiment)
                 st.markdown("### Confidence")
-                st.write(results['confidence'])
+                st.write(results['sentiment_confidence'])
+                # Now the emotions which we'll create a horizontal barchart for
+                st.markdown("### Emotions")
+                # Create a dataframe from the emotions dictionary
+                df = pd.DataFrame.from_dict(results['emotions'], orient='index').reset_index()
+                # Rename the columns
+                df.rename(columns={'index': 'emotion', 0: 'strength'}, inplace=True)
+                # Create a horizontal bar chart using Plotly Express
+                fig = px.bar(df, x='strength', y='emotion', orientation='h', labels={'strength': 'Strength', 'emotion': 'Emotion'})
+                # Reduce the width to fit the box
+                fig.update_layout(width=650)
+                # Set limits on the x axis so it's equal to the left and right
+                # Get the max emotion strength
+                max_strength = abs(df['strength']).max() * 1.05
+                fig.update_xaxes(range=[-max_strength, max_strength])
+                # Display the figure using Streamlit
+                st.plotly_chart(fig)
 
 
 
