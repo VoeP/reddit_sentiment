@@ -6,13 +6,16 @@ FROM python:3.10.6-buster
 COPY setup.py /setup.py
 COPY API /API
 COPY requirements.txt /requirements.txt
+COPY requirements-large.txt /requirements-large.txt
 COPY scripts/initialise_bert.py /scripts/initialise_bert.py
 
 # Upgrade pip
 RUN pip install --upgrade pip
-# Install local package 
-RUN pip install .
+# Install requirements
 RUN pip install requirements.txt
+RUN pip install requirements-large.txt
+# Install local package
+RUN pip install .
 
 # Run the initialise bert script so bert depdancies are built into the image
 RUN python scripts/initialise_bert.py
