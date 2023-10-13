@@ -8,6 +8,10 @@ COPY requirements.txt /requirements.txt
 COPY requirements-large.txt /requirements-large.txt
 COPY scripts/*.py /scripts/
 COPY data_collection/*.py /data_collection/
+COPY reddit-sentiment-400608-24bc7c65b16e.json /app/credentials.json
+
+# Set environment variable to read/write the BQ database
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
 
 # Upgrade pip
 RUN pip install --upgrade pip
