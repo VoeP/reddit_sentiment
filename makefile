@@ -9,31 +9,30 @@ run_frontend:
 update_packages:
 	pip install --upgrade pip
 	pip install -r requirements.txt
+	pip install -r requirements-large.txt
 	pip install -e .
 
-build_container_local:
-	docker build -t api .
-	docker run -p 8080:8000 -e REDDIT_CLIENT_ID -e REDDIT_CLIENT_SECRET -e REDDIT_SCRAPE_USERNAME -e REDDIT_SCRAPE_PASSWORD -e REDDIT_SCRAPE_AGENT -e REDDIT_SCRAPE_REDIRECT api
-
-build_container_gcp:
+build_container_api:
+	mv dockerfile-api dockerfile
 	docker build -t $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/$$DOCKER_IMAGE_NAME .
+	mv dockerfile dockerfile-api
 
-push_container:
+push_container_api:
 	docker push $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/$$DOCKER_IMAGE_NAME
 
-deploy_gcp_container:
-	gcloud run deploy --image $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/$$DOCKER_IMAGE_NAME --platform managed --region $$GCR_REGION --update-env-vars REDDIT_CLIENT_ID="$$REDDIT_CLIENT_ID",REDDIT_CLIENT_SECRET="$$REDDIT_CLIENT_SECRET",REDDIT_SCRAPE_USERNAME="$$REDDIT_SCRAPE_USERNAME",REDDIT_SCRAPE_PASSWORD="$$REDDIT_SCRAPE_PASSWORD",REDDIT_SCRAPE_AGENT="$$REDDIT_SCRAPE_AGENT",REDDIT_SCRAPE_REDIRECT="$$REDDIT_SCRAPE_REDIRECT"
+deploy_container_api:
+	gcloud run deploy --image $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/$$DOCKER_IMAGE_NAME --platform managed --region $$GCR_REGION
 
-stop_container:
-	CONTAINER_ID=$$(docker ps -q --filter "ancestor=api"); \
-	echo "$$CONTAINER_ID" > $(CACHE_FILE); \
-	docker stop $$CONTAINER_ID
+build_data_collection_container:
+	mv dockerfile-datacollection dockerfile
+	# Use the service account key to authenticate the container to GCP
+	cp /home/ed/code/Eatkin/gcp/reddit-sentiment-400608-24bc7c65b16e.json .
+	docker build -t $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/data_collection .
+	mv dockerfile dockerfile-datacollection
+	rm reddit-sentiment-400608-24bc7c65b16e.json
 
-start_container:
-	CONTAINER_ID=$$(cat $(CACHE_FILE)); \
-     	docker start $$CONTAINER_ID
+push_data_collection_container:
+	docker push $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/data_collection
 
-update_container:
-	CONTAINER_ID=$$(cat .container_id_cache); \
-    	docker stop $$CONTAINER_ID && docker rm $$CONTAINER_ID || true
-	$(MAKE) build_container_local
+deploy_data_collection_container:
+	gcloud run deploy --image $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/data_collection --platform managed --region $$GCR_REGION --update-env-vars REDDIT_CLIENT_ID="$$REDDIT_CLIENT_ID",REDDIT_CLIENT_SECRET="$$REDDIT_CLIENT_SECRET",REDDIT_SCRAPE_USERNAME="$$REDDIT_SCRAPE_USERNAME",REDDIT_SCRAPE_PASSWORD="$$REDDIT_SCRAPE_PASSWORD",REDDIT_SCRAPE_AGENT="$$REDDIT_SCRAPE_AGENT",REDDIT_SCRAPE_REDIRECT="$$REDDIT_SCRAPE_REDIRECT"
