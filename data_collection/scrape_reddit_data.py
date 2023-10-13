@@ -1,5 +1,4 @@
 from time import sleep
-import schedule
 import time
 import os
 import traceback
@@ -64,10 +63,3 @@ def main():
 if __name__ == "__main__":
     # Initial run to get some data
     main()
-    # Sleep for 5 minutes - we're not fussy about super accurate timings
-    sleep_interval = 300
-    # Set up schedule - we'll scrape every day at 10pm because that's when the Americans will be active
-    schedule.every().day.at("22:00", "Europe/Amsterdam").do(main)
-    while True:
-        schedule.run_pending()
-        sleep(sleep_interval)
