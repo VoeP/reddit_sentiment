@@ -13,3 +13,4 @@ jupyter==1.0.0
 plotly==5.17.0
 scipy==1.11.2
 schedule==1.2.0
+google-cloud-bigquery==3.12.0
