@@ -3,6 +3,9 @@ CACHE_FILE := .container_id_cache
 run_api:
 	uvicorn API.fastapi:app --reload --host localhost --port 8000
 
+run_datacollection_api:
+	uvicorn data_collection.data_collection_api:app --reload --host localhost --port 8000
+
 run_frontend:
 	streamlit run frontend/index.py
 
