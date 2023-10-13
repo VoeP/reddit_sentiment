@@ -6,14 +6,16 @@ FROM python:3.10.6-buster
 COPY setup.py /setup.py
 COPY API /API
 COPY requirements.txt /requirements.txt
-COPY requirements-large.txt /requirements-large.txt
+COPY requirements-large1.txt /requirements-large1.txt
+COPY requirements-large2.txt /requirements-large2.txt
 COPY scripts/initialise_bert.py /scripts/initialise_bert.py
 
 # Upgrade pip
 RUN pip install --upgrade pip
 # Install requirements
-RUN pip install requirements.txt
-RUN pip install requirements-large.txt
+RUN pip install -r requirements.txt
+RUN pip install -r requirements-large1.txt
+RUN pip install -r requirements-large2.txt
 # Install local package
 RUN pip install .
 

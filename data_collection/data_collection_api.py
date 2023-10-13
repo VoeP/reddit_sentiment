@@ -1,10 +1,8 @@
-import time, datetime, os
+import time, datetime
 from fastapi import FastAPI
 from reddit_sentiment_modules import scraping_python_functions as spf
 import pandas as pd
 from google.cloud import bigquery
-
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/ed/code/Eatkin/gcp/reddit-sentiment-400608-24bc7c65b16e.json"
 
 # Set up definitions
 def connect():
@@ -131,8 +129,7 @@ def get_data():
         except Exception as e:
             print(f"An unexpected error occurred: {str(e)}")
             print("We couldn't check if data collection has already been completed today")
-            print("Aborting")
-            # return {"message": "Data collection failed"}
+            print("This probably means that there is no data because it's the first time we've run this script")
 
         # Get the comments dataframe
         df_comments = get_comments_df(reddit)

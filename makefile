@@ -11,8 +11,9 @@ run_frontend:
 
 update_packages:
 	pip install --upgrade pip
-	pip install -r requirements.txt
-	pip install -r requirements-large.txt
+	pip install -r requirements1.txt
+	pip install -r requirements2.txt
+	pip install -r requirements3.txt
 	pip install -e .
 
 build_container_api:
@@ -30,7 +31,7 @@ build_data_collection_container:
 	mv dockerfile-datacollection dockerfile
 	# Use the service account key to authenticate the container to GCP
 	cp /home/ed/code/Eatkin/gcp/reddit-sentiment-400608-24bc7c65b16e.json .
-	docker build -t $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/data_collection .
+	-docker build -t $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/data_collection .
 	mv dockerfile dockerfile-datacollection
 	rm reddit-sentiment-400608-24bc7c65b16e.json
 

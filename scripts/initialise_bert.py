@@ -1,7 +1,6 @@
 """Single purpose script to load a Bert model and the emotions model
 Bert requires additional downloads to work
 Running this during container image building will ensure that the model requirements are pre-downloaded"""
-import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, TextClassificationPipeline
 
 # Generic function for loading a huggingface model

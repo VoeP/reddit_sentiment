@@ -1,11 +1,11 @@
 # Python image
 FROM python:3.10.6-buster
 
+
 # Copy API, requirements and the makefile
 # Syntax COPY [source] [destination]
 COPY setup.py /setup.py
-COPY requirements.txt /requirements.txt
-COPY requirements-large.txt /requirements-large.txt
+COPY requirements1.txt /requirements1.txt
 COPY scripts/*.py /scripts/
 COPY data_collection/*.py /data_collection/
 COPY reddit-sentiment-400608-24bc7c65b16e.json /app/credentials.json
@@ -16,8 +16,7 @@ ENV GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
 # Upgrade pip
 RUN pip install --upgrade pip
 # Install requirements
-RUN pip install requirements.txt
-RUN pip install requirements-large.txt
+RUN pip install -r requirements1.txt
 # Install local package
 RUN pip install .
 
