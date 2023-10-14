@@ -39,4 +39,6 @@ push_data_collection_container:
 	docker push $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/data_collection
 
 deploy_data_collection_container:
+	# This will deploy but also update the environment variables so it can work
+	# The environment variables can of course be set manually in the console
 	gcloud run deploy --image $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/data_collection --platform managed --region $$GCR_REGION --update-env-vars REDDIT_CLIENT_ID="$$REDDIT_CLIENT_ID",REDDIT_CLIENT_SECRET="$$REDDIT_CLIENT_SECRET",REDDIT_SCRAPE_USERNAME="$$REDDIT_SCRAPE_USERNAME",REDDIT_SCRAPE_PASSWORD="$$REDDIT_SCRAPE_PASSWORD",REDDIT_SCRAPE_AGENT="$$REDDIT_SCRAPE_AGENT",REDDIT_SCRAPE_REDIRECT="$$REDDIT_SCRAPE_REDIRECT"

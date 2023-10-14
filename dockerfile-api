@@ -1,23 +1,23 @@
-# Python image
-FROM python:3.10.6-buster
+# Pytorch base image
+FROM pytorch/pytorch:2.0.0-cuda11.7-cudnn8-runtime
+
+WORKDIR /
 
 # Copy API, requirements and the makefile
 # Syntax COPY [source] [destination]
-COPY setup.py /setup.py
 COPY API /API
-COPY requirements.txt /requirements.txt
-COPY requirements-large1.txt /requirements-large1.txt
-COPY requirements-large2.txt /requirements-large2.txt
+COPY scripts/*.py /scripts/
+COPY requirements1.txt /requirements1.txt
 COPY scripts/initialise_bert.py /scripts/initialise_bert.py
+COPY reddit-sentiment-400608-24bc7c65b16e.json /app/credentials.json
+
+# Set environment variable to read/write the BQ database
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
 
 # Upgrade pip
 RUN pip install --upgrade pip
 # Install requirements
-RUN pip install -r requirements.txt
-RUN pip install -r requirements-large1.txt
-RUN pip install -r requirements-large2.txt
-# Install local package
-RUN pip install .
+RUN pip install -r requirements1.txt
 
 # Run the initialise bert script so bert depdancies are built into the image
 RUN python scripts/initialise_bert.py

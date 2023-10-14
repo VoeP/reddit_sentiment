@@ -2,7 +2,6 @@ import os
 from fastapi import FastAPI
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, TextClassificationPipeline
-from reddit_sentiment_modules import scraping_python_functions as spf
 import pandas as pd
 
 # Create the app object
