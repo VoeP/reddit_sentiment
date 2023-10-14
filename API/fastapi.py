@@ -1,14 +1,16 @@
-import os
 from fastapi import FastAPI
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, TextClassificationPipeline
 import pandas as pd
+from google.cloud import bigquery
+from datetime import datetime
 
 # Create the app object
 app = FastAPI()
 
 # Define constants
 CHUNK_SIZE = 512
+CACHE_UPDATE = datetime.now()
 
 # Generic error function to use for all endpoints
 def message_error(message):
@@ -34,21 +36,56 @@ def load_huggingface_tokenizer_model(model_path):
 pipeline_bert = load_huggingface_model("nlptown/bert-base-multilingual-uncased-sentiment")
 emotions_tokeniser, emotions_model = load_huggingface_tokenizer_model("cardiffnlp/twitter-roberta-base-emotion")
 
-def get_wsb_data():
-    # Find the local csv files to process
-    our_path = os.path.abspath(os.path.dirname(__file__))
-    par_dir = os.path.dirname(our_path)
-    # csvs are in data_for_plotting
-    csv_path = os.path.join(our_path, par_dir, "reddit_data")
 
-    # Find all csvs in the folder
-    all_csvs = os.listdir(csv_path)
-    # they're of the format reddit_comments_yyyy_mm_dd.csv and reddit_posts_yyyy_mm_dd.csv so filter and sort
-    comments_csvs = sorted([csv for csv in all_csvs if "comments" in csv])
-    posts_csvs = sorted([csv for csv in all_csvs if "posts" in csv])
-    comment_df = pd.read_csv(os.path.join(csv_path, comments_csvs[-1]))
-    post_df = pd.read_csv(os.path.join(csv_path, posts_csvs[-1]))
+def get_wsb_data(override_cache=False):
+    # Check if we have a cached version of the data
+    # It's unlikely an instance will be running for more than an hour
+    # But also since this gets called 3 times by the different endpoints we might as well cache it
+    # Especially as the streamlit site will be calling all 3 endpoints
+    cache_expiry = 3600 # 1 hour
+    if not override_cache:
+        dt = datetime.now() - CACHE_UPDATE
+        if dt.seconds < cache_expiry:
+            print("Using cached data")
+            return comments_df, posts_df
+
+    # Constants
+    project_id = "reddit-sentiment-400608"
+    dataset_id = "wallstreetbets"
+    table_id = "reddit_comments"
+    # Bigquery client
+    client = bigquery.Client(project=project_id)
+    print("Bigquery connection established")
+
+    # Set up the query
+    query = f"""
+    SELECT *
+    FROM {project_id}.{dataset_id}.{table_id}
+    WHERE date = MAX(date)"""
+
+    # Run the query
+    query_job = client.query(query)
+    comment_df = query_job.to_dataframe()
+
+    # Switch table id to posts
+    table_id = "reddit_posts"
+    # New query
+    query = f"""
+    SELECT *
+    FROM {project_id}.{dataset_id}.{table_id}
+    WHERE date = MAX(date)"""
+
+    # Run the query
+    query_job = client.query(query)
+    post_df = query_job.to_dataframe()
+
+    # Done
     return comment_df, post_df
+
+
+# Let's do an initial query to get the latest data
+comments_df, posts_df = get_wsb_data(True)
+
 
 # Create the root endpoint
 @app.get("/")

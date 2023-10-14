@@ -13,7 +13,6 @@ update_packages:
 	pip install --upgrade pip
 	pip install -r requirements1.txt
 	pip install -r requirements2.txt
-	pip install -r requirements3.txt
 	pip install -e .
 
 build_container_api:
