@@ -18,7 +18,7 @@ update_packages:
 
 build_container_api:
 	mv dockerfile-api dockerfile
-	docker build -t $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/$$DOCKER_IMAGE_NAME .
+	-docker build -t $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/$$DOCKER_IMAGE_NAME .
 	mv dockerfile dockerfile-api
 
 push_container_api:
