@@ -20,15 +20,15 @@ def message_error(message):
 
 # Generic function for loading a huggingface model
 def load_huggingface_model(model_path):
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
-    model = AutoModelForSequenceClassification.from_pretrained(model_path)
+    tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir="/app/cache")
+    model = AutoModelForSequenceClassification.from_pretrained(model_path, cache_dir="/app/cache")
 
     return TextClassificationPipeline(model=model, tokenizer=tokenizer)
 
 # Generic function for getting tokenizer and model from huggingface
 def load_huggingface_tokenizer_model(model_path):
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
-    model = AutoModelForSequenceClassification.from_pretrained(model_path)
+    tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir="/app/cache")
+    model = AutoModelForSequenceClassification.from_pretrained(model_path, cache_dir="/app/cache")
 
     return tokenizer, model
 

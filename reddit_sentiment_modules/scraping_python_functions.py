@@ -1,11 +1,10 @@
 import praw
 from reddit_sentiment_modules.credentials import Credentials
-from transformers import AutoTokenizer, AutoModelForSequenceClassification, RobertaForSequenceClassification
-import torch
+from transformers import AutoModelForSequenceClassification, AutoTokenizer, TextClassificationPipeline
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
+from scipy.special import softmax
 
 
 def init_reddit():
@@ -154,42 +153,43 @@ def process_data(data, text_column="text", tokenizer1=None, model1=None, tokeniz
     emotion model, cardiffnlp/twitter-roberta-base-emotion being the default. The models need to have the same output
     format as the default mdoels to work."""
 
-    if tokenizer1==None:
-        tokenizer1=AutoTokenizer.from_pretrained('nlptown/bert-base-multilingual-uncased-sentiment')
-    if model1==None:
-        model1=AutoModelForSequenceClassification.from_pretrained('nlptown/bert-base-multilingual-uncased-sentiment')
+    # Generic function for loading a huggingface model
+    def load_huggingface_model(model_path):
+        tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir="/app/cache")
+        model = AutoModelForSequenceClassification.from_pretrained(model_path, cache_dir="/app/cache")
 
-    if tokenizer2==None:
-        tokenizer2 = AutoTokenizer.from_pretrained("cardiffnlp/twitter-roberta-base-emotion")
-    if model2==None:
-        model2=RobertaForSequenceClassification.from_pretrained("cardiffnlp/twitter-roberta-base-emotion")
+        return TextClassificationPipeline(model=model, tokenizer=tokenizer)
+
+    # Generic function for getting tokenizer and model from huggingface
+    def load_huggingface_tokenizer_model(model_path):
+        tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir="/app/cache")
+        model = AutoModelForSequenceClassification.from_pretrained(model_path, cache_dir="/app/cache")
+
+        return tokenizer, model
+
+
+    pipeline_bert = load_huggingface_model("nlptown/bert-base-multilingual-uncased-sentiment")
+    emotions_tokeniser, emotions_model = load_huggingface_tokenizer_model("cardiffnlp/twitter-roberta-base-emotion")
 
 
     def sentiment_score(review):
-        tokens = tokenizer1.encode(review, return_tensors='pt')
-        result = model1(tokens)
-        return int(torch.argmax(result.logits))+1
-
+        return pipeline_bert(review)[0]
 
     data['sentiment'] = data[text_column].apply(lambda x: sentiment_score(x[:512]))
-
-    def yield_raw_predictions(comment:str)->str:
-        inputs = tokenizer2(comment, return_tensors="pt")
-        with torch.no_grad():
-            logits = model2(**inputs).logits
-        return logits.tolist()[0]
-
 
     def get_emotion_scores_as_dict(comments:list)->dict:
         joy = []
         optimism = []
         anger = []
         sadness = []
-        emotions= [joy, optimism, anger, sadness]
+        emotions= [anger, joy, optimism, sadness]
         for comment in comments:
-            raw_predictions=yield_raw_predictions(comment[:512])
-            for i in np.arange(len(raw_predictions)):
-                emotions[i].append(raw_predictions[i])
+            encoded_input = emotions_tokeniser(comment, return_tensors='pt')
+            output = emotions_model(**encoded_input)
+            scores = output[0][0].detach().numpy()
+            scores = softmax(scores)
+            for i, score in enumerate(scores):
+                emotions[i].append(score)
 
         return {"joy": joy ,"optimism": optimism ,"anger": anger ,"sadness": sadness}
 
