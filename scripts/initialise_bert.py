@@ -8,7 +8,7 @@ def load_huggingface_model(model_path):
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     model = AutoModelForSequenceClassification.from_pretrained(model_path)
 
-    model.save_pretrained(model_path)
+    model.save_pretrained("/app/cache/" + model_path)
 
     return TextClassificationPipeline(model=model, tokenizer=tokenizer)
 
@@ -17,7 +17,7 @@ def load_huggingface_tokenizer_model(model_path):
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     model = AutoModelForSequenceClassification.from_pretrained(model_path)
 
-    model.save_pretrained(model_path)
+    model.save_pretrained("/app/cache/" + model_path)
 
     return tokenizer, model
 

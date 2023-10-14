@@ -24,6 +24,9 @@ RUN pip install -r requirements1.txt
 # Install local package
 RUN pip install .
 
+# Make the directory for the models
+RUN mkdir -p /app/cache
+
 # Run the initialise bert script so bert depdancies are built into the image
 RUN python scripts/initialise_bert.py
 
