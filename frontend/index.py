@@ -248,4 +248,6 @@ else:
     st.markdown("#### Raw Data")
 
     # Print out the dataframe with ids and corresponding posts
+    # The url column only has the /r/wallstreetbets part of the url, so we need to add the rest
+    df['url'] = "https://www.reddit.com" + df['url']
     st.dataframe(df)
