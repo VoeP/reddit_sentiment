@@ -36,6 +36,7 @@ def get_posts_df(reddit):
     return post_details
 
 def push_to_bigquery(client, comments, posts):
+    todays_date = datetime.datetime.now().strftime("%Y-%m-%d")
     # Constants
     project_id = "reddit-sentiment-400608"
     dataset_id = "wallstreetbets"
@@ -81,9 +82,18 @@ def push_to_bigquery(client, comments, posts):
         write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
     )
 
+    # Set date column to today's date
+    comments["date"] = todays_date
+    posts["date"] = todays_date
+
     # Bigquery requires dataframe to be in a list so convert to records format
     comments_records = comments.to_dict(orient="records")
     posts_records = posts.to_dict(orient="records")
+
+    # Empty bodies appear as NaN and thus as floats so we need to convert them to empty strings
+    for record in posts_records:
+        if type(record['bodies']) == float:
+            record['bodies'] = ''
 
     print("Pushing comments to Bigquery")
     client.load_table_from_json(
