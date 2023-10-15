@@ -86,14 +86,20 @@ def push_to_bigquery(client, comments, posts):
     comments["date"] = todays_date
     posts["date"] = todays_date
 
+    # Impute missing values
+    comments = comments.fillna("")
+    posts = posts.fillna("")
+
     # Bigquery requires dataframe to be in a list so convert to records format
     comments_records = comments.to_dict(orient="records")
     posts_records = posts.to_dict(orient="records")
 
-    # Empty bodies appear as NaN and thus as floats so we need to convert them to empty strings
-    for record in posts_records:
-        if type(record['bodies']) == float:
-            record['bodies'] = ''
+    # Write these to temporary files so I can inspect them
+    with open("comments_records.txt", "w") as f:
+        f.write(str(comments_records))
+    with open("posts_records.txt", "w") as f:
+        f.write(str(posts_records))
+
 
     print("Pushing comments to Bigquery")
     client.load_table_from_json(
@@ -168,3 +174,5 @@ def get_data():
     except Exception as e:
         print(f"An unexpected error occurred: {str(e)}")
         return {"message": "Data collection failed"}
+
+get_data()

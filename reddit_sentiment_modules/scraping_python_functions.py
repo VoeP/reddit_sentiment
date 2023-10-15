@@ -155,16 +155,20 @@ def process_data(data, text_column="text", tokenizer1=None, model1=None, tokeniz
 
     # Generic function for loading a huggingface model
     def load_huggingface_model(model_path):
-        tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir="/app/cache")
-        model = AutoModelForSequenceClassification.from_pretrained(model_path, cache_dir="/app/cache")
+        # tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir="/app/cache")
+        # model = AutoModelForSequenceClassification.from_pretrained(model_path, cache_dir="/app/cache")
+        tokenizer = AutoTokenizer.from_pretrained(model_path)
+        model = AutoModelForSequenceClassification.from_pretrained(model_path)
 
         return TextClassificationPipeline(model=model, tokenizer=tokenizer)
 
     # Generic function for getting tokenizer and model from huggingface
     def load_huggingface_tokenizer_model(model_path):
-        tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir="/app/cache", max_length=512, truncation=True)
-        model = AutoModelForSequenceClassification.from_pretrained(model_path, cache_dir="/app/cache")
+        # tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir="/app/cache", max_length=512, truncation=True)
+        # model = AutoModelForSequenceClassification.from_pretrained(model_path, cache_dir="/app/cache")
 
+        tokenizer = AutoTokenizer.from_pretrained(model_path, max_length=512, truncation=True)
+        model = AutoModelForSequenceClassification.from_pretrained(model_path)
         return tokenizer, model
 
 
@@ -173,7 +177,11 @@ def process_data(data, text_column="text", tokenizer1=None, model1=None, tokeniz
 
 
     def sentiment_score(review):
-        return pipeline_bert(review)[0]
+        result = pipeline_bert(review)[0]
+        rating = result['label']
+        # Get just the number
+        rating = int(rating[0])
+        return rating
 
     data['sentiment'] = data[text_column].apply(lambda x: sentiment_score(x[:512]))
 
