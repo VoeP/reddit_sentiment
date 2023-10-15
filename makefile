@@ -16,9 +16,11 @@ update_packages:
 	pip install -e .
 
 build_container_api:
+	cp /home/ed/code/Eatkin/gcp/reddit-sentiment-400608-24bc7c65b16e.json .
 	mv dockerfile-api dockerfile
 	-docker build -t $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/$$DOCKER_IMAGE_NAME .
 	mv dockerfile dockerfile-api
+	rm reddit-sentiment-400608-24bc7c65b16e.json
 
 push_container_api:
 	docker push $$GCR_MULTI_REGION/$$GCP_PROJECT_ID/$$DOCKER_IMAGE_NAME
