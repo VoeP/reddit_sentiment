@@ -60,6 +60,7 @@ def push_to_bigquery(client, comments, posts):
         bigquery.SchemaField("date", "DATE"),
         bigquery.SchemaField("ids", "STRING"),
         bigquery.SchemaField("titles", "STRING"),
+        bigquery.SchemaField("scores", "INTEGER"),
         bigquery.SchemaField("controversiality", "FLOAT"),
         bigquery.SchemaField("bodies", "STRING"),
         bigquery.SchemaField("original", "BOOLEAN"),
@@ -94,12 +95,12 @@ def push_to_bigquery(client, comments, posts):
     comments_records = comments.to_dict(orient="records")
     posts_records = posts.to_dict(orient="records")
 
-    # Write these to temporary files so I can inspect them
-    with open("comments_records.txt", "w") as f:
-        f.write(str(comments_records))
-    with open("posts_records.txt", "w") as f:
-        f.write(str(posts_records))
-
+    # There are some data typing issues here
+    # Convert scores to int, controversiality to float, num comments to int
+    for record in posts_records:
+        record["scores"] = int(record["scores"])
+        record["controversiality"] = float(record["controversiality"])
+        record["num_comments"] = int(record["num_comments"])
 
     print("Pushing comments to Bigquery")
     client.load_table_from_json(
@@ -174,5 +175,3 @@ def get_data():
     except Exception as e:
         print(f"An unexpected error occurred: {str(e)}")
         return {"message": "Data collection failed"}
-
-get_data()

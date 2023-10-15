@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, TextClassificationPipeline
 import pandas as pd
 from google.cloud import bigquery
@@ -62,7 +61,7 @@ def get_wsb_data(override_cache=False):
     query = f"""
     SELECT *
     FROM {project_id}.{dataset_id}.{table_id}
-    WHERE date = MAX(date)"""
+    WHERE date = (SELECT MAX(date) FROM {project_id}.{dataset_id}.{table_id})"""
 
     # Run the query
     query_job = client.query(query)
@@ -74,7 +73,7 @@ def get_wsb_data(override_cache=False):
     query = f"""
     SELECT *
     FROM {project_id}.{dataset_id}.{table_id}
-    WHERE date = MAX(date)"""
+    WHERE date = (SELECT MAX(date) FROM {project_id}.{dataset_id}.{table_id})"""
 
     # Run the query
     query_job = client.query(query)
