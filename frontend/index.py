@@ -89,7 +89,7 @@ with st.form(key='comment_form'):
                 # Set limits on the x axis so it's equal to the left and right
                 # Get the max emotion strength
                 max_strength = abs(df['strength']).max() * 1.05
-                fig.update_xaxes(range=[-max_strength, max_strength])
+                fig.update_xaxes(range=[0, max_strength])
                 # Display the figure using Streamlit
                 st.plotly_chart(fig)
 

@@ -198,6 +198,8 @@ def process_data(data, text_column="text", tokenizer1=None, model1=None, tokeniz
             except Exception as e:
                 print("Emotion model failed to process comment")
                 print(e)
+                for i in range(4):
+                    emotions[i].append(0)
 
         return {"joy": joy ,"optimism": optimism ,"anger": anger ,"sadness": sadness}
 
