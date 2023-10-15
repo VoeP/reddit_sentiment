@@ -47,7 +47,7 @@ def push_to_bigquery(client, comments, posts):
         bigquery.SchemaField("score", "INTEGER"),
         bigquery.SchemaField("level", "INTEGER"),
         bigquery.SchemaField("post", "STRING"),
-        bigquery.SchemaField("url", "INTEGER"),
+        bigquery.SchemaField("url", "STRING"),
         bigquery.SchemaField("sentiment", "FLOAT"),
         bigquery.SchemaField("joy", "FLOAT"),
         bigquery.SchemaField("optimism", "FLOAT"),
