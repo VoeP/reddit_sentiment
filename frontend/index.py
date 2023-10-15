@@ -14,7 +14,7 @@ if deployment == "LOCAL":
 elif deployment == "DOCKER_LOCAL":
     URL = "http://localhost:8080/"
 elif deployment == "DOCKER_GCP":
-    URL = "https://apiv2-fjs6hewsza-ew.a.run.app/"
+    URL = "https://api-fjs6hewsza-nw.a.run.app/"
 
 # Setup page
 st.set_page_config(
@@ -89,7 +89,7 @@ with st.form(key='comment_form'):
                 # Set limits on the x axis so it's equal to the left and right
                 # Get the max emotion strength
                 max_strength = abs(df['strength']).max() * 1.05
-                fig.update_xaxes(range=[-max_strength, max_strength])
+                fig.update_xaxes(range=[0, max_strength])
                 # Display the figure using Streamlit
                 st.plotly_chart(fig)
 
@@ -248,4 +248,15 @@ else:
     st.markdown("#### Raw Data")
 
     # Print out the dataframe with ids and corresponding posts
+    # The url column only has the /r/wallstreetbets part of the url, so we need to add the rest
+    df['url'] = "https://www.reddit.com" + df['url']
     st.dataframe(df)
+
+    # Create a download button for CSV
+    csv_data = df.to_csv(index=False, encoding='utf-8')
+    st.download_button(
+        label="Download CSV",
+        data=csv_data,
+        key='download_button',
+        file_name='data.csv',
+    )
