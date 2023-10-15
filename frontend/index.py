@@ -14,7 +14,7 @@ if deployment == "LOCAL":
 elif deployment == "DOCKER_LOCAL":
     URL = "http://localhost:8080/"
 elif deployment == "DOCKER_GCP":
-    URL = "https://apiv2-fjs6hewsza-ew.a.run.app/"
+    URL = "https://api-fjs6hewsza-nw.a.run.app/"
 
 # Setup page
 st.set_page_config(
@@ -251,3 +251,12 @@ else:
     # The url column only has the /r/wallstreetbets part of the url, so we need to add the rest
     df['url'] = "https://www.reddit.com" + df['url']
     st.dataframe(df)
+
+    # Create a download button for CSV
+    csv_data = df.to_csv(index=False, encoding='utf-8')
+    st.download_button(
+        label="Download CSV",
+        data=csv_data,
+        key='download_button',
+        file_name='data.csv',
+    )
