@@ -4,6 +4,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer, Text
 import pandas as pd
 from google.cloud import bigquery
 from datetime import datetime
+from scipy.special import softmax
 
 # Create the app object
 app = FastAPI()
@@ -20,7 +21,6 @@ def message_error(message):
 
 # Generic function for loading a huggingface model
 def load_huggingface_model(model_path):
-    model_path = "/app/cache/" + model_path
     tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir="/app/cache")
     model = AutoModelForSequenceClassification.from_pretrained(model_path, cache_dir="/app/cache")
 
@@ -28,7 +28,6 @@ def load_huggingface_model(model_path):
 
 # Generic function for getting tokenizer and model from huggingface
 def load_huggingface_tokenizer_model(model_path):
-    model_path = "/app/cache/" + model_path
     tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir="/app/cache")
     model = AutoModelForSequenceClassification.from_pretrained(model_path, cache_dir="/app/cache")
 
@@ -115,11 +114,11 @@ def predict_message(message):
         confidences.append(sentiment['score'])
 
         # Get the emotions - they will just be a dictionary
-        inputs = emotions_tokeniser(message, return_tensors="pt")
-        with torch.no_grad():
-            logits = emotions_model(**inputs).logits.tolist()[0]
-            emotions.append({"joy": logits[0], "optimism": logits[1], "anger": logits[2], "sadness": logits[3]})
-
+        encoded_input = emotions_tokeniser(chunk, return_tensors='pt', truncation=True, max_length=512)
+        output = emotions_model(**encoded_input)
+        scores = output[0][0].detach().numpy()
+        scores = softmax(scores)
+        emotions.append({"joy": scores[1], "optimism": scores[2], "anger": scores[0], "sadness": scores[3]})
 
     print("Processed chunks: ", len(sentiments))
 

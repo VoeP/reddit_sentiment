@@ -155,17 +155,15 @@ def process_data(data, text_column="text", tokenizer1=None, model1=None, tokeniz
 
     # Generic function for loading a huggingface model
     def load_huggingface_model(model_path):
-        model_path = "/app/cache/" + model_path
-        tokenizer = AutoTokenizer.from_pretrained(model_path)
-        model = AutoModelForSequenceClassification.from_pretrained(model_path)
+        tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir="/app/cache")
+        model = AutoModelForSequenceClassification.from_pretrained(model_path, cache_dir="/app/cache")
 
         return TextClassificationPipeline(model=model, tokenizer=tokenizer)
 
     # Generic function for getting tokenizer and model from huggingface
     def load_huggingface_tokenizer_model(model_path):
-        model_path = "/app/cache/" + model_path
-        tokenizer = AutoTokenizer.from_pretrained(model_path)
-        model = AutoModelForSequenceClassification.from_pretrained(model_path)
+        tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir="/app/cache", max_length=512, truncation=True)
+        model = AutoModelForSequenceClassification.from_pretrained(model_path, cache_dir="/app/cache")
 
         return tokenizer, model
 
@@ -186,12 +184,20 @@ def process_data(data, text_column="text", tokenizer1=None, model1=None, tokeniz
         sadness = []
         emotions= [anger, joy, optimism, sadness]
         for comment in comments:
-            encoded_input = emotions_tokeniser(comment, return_tensors='pt')
-            output = emotions_model(**encoded_input)
-            scores = output[0][0].detach().numpy()
-            scores = softmax(scores)
-            for i, score in enumerate(scores):
-                emotions[i].append(score)
+            # The truncation and max_length parameters are EXTREMELY necessary for this to work
+            # If we get a really, excessively long comment it will break the model without it
+            # But also let's just add a failsafe to make sure we don't break it anyway
+            # Because I am fed up of pushing this to google container registry 10 times a day
+            try:
+                encoded_input = emotions_tokeniser(comment, return_tensors='pt', truncation=True, max_length=512)
+                output = emotions_model(**encoded_input)
+                scores = output[0][0].detach().numpy()
+                scores = softmax(scores)
+                for i, score in enumerate(scores):
+                    emotions[i].append(score)
+            except Exception as e:
+                print("Emotion model failed to process comment")
+                print(e)
 
         return {"joy": joy ,"optimism": optimism ,"anger": anger ,"sadness": sadness}
 
