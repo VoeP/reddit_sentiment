@@ -4,6 +4,10 @@ from reddit_sentiment_modules import scraping_python_functions as spf
 import pandas as pd
 from google.cloud import bigquery
 
+# Create the app object
+app = FastAPI()
+
+
 # Set up definitions
 def connect():
     """Establishes a connection to reddit using praw."""
@@ -32,7 +36,11 @@ def get_posts_df(reddit):
     return post_details
 
 def push_to_bigquery(client, comments, posts):
-    current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+    # Constants
+    project_id = "reddit-sentiment-400608"
+    dataset_id = "wallstreetbets"
+    table_id = "reddit_comments"
+
     comments_schema = [
         bigquery.SchemaField("date", "DATE"),
         bigquery.SchemaField("text", "STRING"),
@@ -90,13 +98,6 @@ def push_to_bigquery(client, comments, posts):
         posts_records, f"{project_id}.{dataset_id}.{table_id}", job_config=posts_job_config
     ).result()
 
-# Create the app object
-app = FastAPI()
-
-# Constants
-project_id = "reddit-sentiment-400608"
-dataset_id = "wallstreetbets"
-table_id = "reddit_comments"
 
 # Create the root endpoint
 @app.get("/")
@@ -106,6 +107,11 @@ def index():
 # Endpoint that can be poked to trigger data collection
 @app.get("/get_data")
 def get_data():
+    # Constants
+    project_id = "reddit-sentiment-400608"
+    dataset_id = "wallstreetbets"
+    table_id = "reddit_comments"
+
     try:
         # Establish connection
         reddit = connect()
