@@ -8,7 +8,7 @@ WORKDIR /
 # Copy API, requirements and the makefile
 # Syntax COPY [source] [destination]
 COPY setup.py /setup.py
-COPY requirements1.txt /requirements1.txt
+COPY requirements.txt /requirements1.txt
 COPY scripts/*.py /scripts/
 COPY data_collection/*.py /data_collection/
 COPY reddit-sentiment-400608-24bc7c65b16e.json /app/credentials.json
